@@ -2,7 +2,7 @@
 #include<iostream>
 #include<algorithm>
 
-Matrix::Matrix(const int& height, const int& width)
+Matrix::Matrix( int height, int width)
 {
     this->height = height;
     this->width = width;
@@ -37,7 +37,7 @@ Matrix & Matrix::operator=(Matrix other)
     return *this;
 }
 
-double*& Matrix::operator [](const int& index) const 
+double*& Matrix::operator [] (int index) const 
 {
     return  insides[index];
 }
@@ -141,7 +141,7 @@ void swap(Matrix& first, Matrix& second) {
     swap(first.insides,second.insides);
 };
 
-Matrix Matrix::xRotation(const double& angle) {
+Matrix Matrix::xRotation( double angle) {
     Matrix returnMatrix(3,3);
     returnMatrix[0][0] = 1;
     returnMatrix[1][1] = cos(angle);
@@ -151,7 +151,7 @@ Matrix Matrix::xRotation(const double& angle) {
     return returnMatrix;
 };
 
-Matrix Matrix::yRotation(const double& angle){
+Matrix Matrix::yRotation( double angle){
     Matrix returnMatrix(3, 3);
     returnMatrix[0][0] = cos(angle);
     returnMatrix[0][2] = sin(angle);
@@ -161,7 +161,7 @@ Matrix Matrix::yRotation(const double& angle){
     return returnMatrix;
 };
 
-Matrix Matrix::zRotation(const double& angle){
+Matrix Matrix::zRotation( double angle){
     Matrix returnMatrix(3, 3);
     returnMatrix[0][0] = cos(angle);
     returnMatrix[0][1] = -sin(angle);
@@ -171,7 +171,7 @@ Matrix Matrix::zRotation(const double& angle){
     return returnMatrix;
 };
 
-Matrix Matrix::identityMatrix(const int& size) {
+Matrix Matrix::identityMatrix( int size) {
     Matrix returnMatrix(size, size);
     for (int i = 0; i < size; i++)
     {

@@ -246,7 +246,7 @@ void Rasterizer::drawScanline(LineVars line1, LineVars line2, gradients gra, flo
     }
 };
 
-void Rasterizer::drawTexuredPointZ(const int& y, const int& x, const float& uprim, const float& vprim, const float & zprim, const float& z, Triangle3D triangle, Uint32& data,SDL_Color& color)
+void Rasterizer::drawTexuredPointZ(int y, int x, float uprim, float vprim, float zprim, float z, Triangle3D triangle, Uint32& data,SDL_Color& color)
 {
     unsigned int offset = (windowWidth * (-y + windowHeight / 2.)) + (x + windowWidth/ 2.);
     if (abs(y) < windowHeight / 2. && abs(x) < windowWidth / 2.) {
