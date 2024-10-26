@@ -11,10 +11,10 @@ class Rasterizer
 	float* zbuffer;
 	void drawScanline(struct LineVars line1,struct LineVars line2,struct gradients gra, float dxz, Triangle3D triangle);
 	void drawTexuredPointZ(int y, int x,float uprim,float vprim,float zprim,float z, Triangle3D triangle, Uint32& data, SDL_Color& color);
-	void drawTrianglez(Triangle3D triangle);
+public:
 	void drawTrianglezWire(Triangle3D triangle) const;
 	void drawTriangle(Triangle2D triangle) const;
-public:
+	void drawTrianglez(Triangle3D triangle);
 	Rasterizer(WindowHandler& windowHandler);
 	~Rasterizer();
 	void cleanzbuffer();

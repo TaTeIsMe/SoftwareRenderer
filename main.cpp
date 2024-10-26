@@ -54,30 +54,16 @@ int main() {
 
 		//the graphics pipeline
 		vector<Triangle3D> triangles = scene1.objectsToSceneSpace();
-		timerHandler.startTimer(0);
-		triangles = scene1.camera.convertToCameraSpace(triangles);
-		timerHandler.printTimer(0);
-
-		timerHandler.startTimer(1);
-		triangles = scene1.camera.backfaceCulling(triangles);
-		timerHandler.printTimer(1);
-
-		timerHandler.startTimer(2);
-		triangles = scene1.camera.nearClipping(triangles);
-		timerHandler.printTimer(2);
-
-		timerHandler.startTimer(3);
-		triangles = scene1.camera.triangles3Dto2Dz(triangles);
-		timerHandler.printTimer(3);
-
-		timerHandler.startTimer(4);
-		triangles = scene1.camera.sideClipping(triangles);
-		timerHandler.printTimer(4);
-
-		timerHandler.startTimer(5);
-		rasterizer.drawScenez(triangles);
-		timerHandler.printTimer(5);
-
+		for (int i = 0; i < triangles.size(); i++)
+		{
+			Triangle3D handledTriangle = triangles[i];
+			handledTriangle = scene1.camera.convertToCameraSpace(handledTriangle);
+			if (scene1.camera.isTriangleFacingAway(handledTriangle)) continue; 
+			if (scene1.camera.isTriangleTooNear(handledTriangle)) continue; 
+			handledTriangle = scene1.camera.triangle3Dto2Dz(handledTriangle);
+			if (scene1.camera.is2DTriangleOutsideOfScreen(handledTriangle))continue;
+			rasterizer.drawTrianglez(handledTriangle);
+		}
 
 		//rasterizer.drawScenezWire(triangles);
 

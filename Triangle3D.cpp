@@ -18,7 +18,7 @@ Triangle3D::Triangle3D(const Triangle2D& tri2D) :vertices{Vertex3(tri2D.vertices
 {
 }
 
-Vertex3& Triangle3D::operator [](int index)
+ Vertex3& Triangle3D::operator [](int index)
 {
 	return vertices[index];
 }

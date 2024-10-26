@@ -54,18 +54,12 @@ Triangle3D Camera::convertToCameraSpace(Triangle3D worldTriangle) const
 	return worldTriangle;
 }
 
+
 std::vector<Triangle3D> Camera::convertToCameraSpace(std::vector<Triangle3D> worldTriangles) const
 {
 	for (int i = 0; i < worldTriangles.size(); i++)
 	{
-		for (int k = 0; k < 3; k++)
-		{
-			//translate to camera space
-			worldTriangles[i][k] -= position;
-			worldTriangles[i][k] *= transpose;
-		}
-		worldTriangles[i].normal *= transpose;
-
+		worldTriangles[i] = convertToCameraSpace(worldTriangles[i]);
 	}
 	return worldTriangles;
 }
@@ -84,6 +78,16 @@ std::vector<Triangle3D> Camera::backfaceCulling(std::vector<Triangle3D> triangle
 	return temp;
 }
 
+bool Camera::isTriangleFacingAway( Triangle3D triangle) const
+{
+		if (Vector3::dotProduct(triangle[0], triangle.normal) >= 0)
+		{
+			return true;
+		}
+	return false;
+}
+
+
 std::vector<Triangle3D> Camera::nearClipping(std::vector<Triangle3D> triangles) const
 {
 	std::vector<Triangle3D> temp;
@@ -100,6 +104,18 @@ std::vector<Triangle3D> Camera::nearClipping(std::vector<Triangle3D> triangles) 
 	skip:;
 	}
 	return temp;
+}
+
+bool Camera::isTriangleTooNear(Triangle3D triangle) const
+{
+		for (int k = 0; k < 3; k++)
+		{
+			if (triangle[k].z < planePos.z)
+			{
+				return true;
+			};
+		}
+		return false;
 }
 
 std::vector<Triangle3D> Camera::triangles3Dto2Dz(std::vector<Triangle3D> triangles) const
@@ -130,6 +146,8 @@ std::vector<Triangle3D> Camera::sideClipping(std::vector<Triangle3D> triangles) 
 	}
 	return temp;
 }
+
+
 
 double Camera::getPlanez()const
 {
@@ -169,6 +187,31 @@ void Camera::clipTriangleToSides2D(Triangle3D triangle, std::vector<Triangle3D>&
 	}
 	
 	worldTriangles.push_back(triangle);
+}
+
+bool Camera::is2DTriangleOutsideOfScreen(Triangle3D triangle) const
+{
+	int dx1 = abs(triangle[0].x - triangle[1].x);
+	int dx2 = abs(triangle[0].x - triangle[2].x);
+	int dx3 = abs(triangle[1].x - triangle[2].x);
+	int boxWidth = std::max({ dx1, dx2, dx3 });
+	int dy1 = abs(triangle[0].y - triangle[1].y);
+	int dy2 = abs(triangle[0].y - triangle[2].y);
+	int dy3 = abs(triangle[1].y - triangle[2].y);
+	int boxHeight = std::max({ dy1, dy2, dy3 });
+	int boxPosx = std::min({ triangle[0].x,triangle[1].x,triangle[2].x }) + boxWidth / 2.;
+	int boxPosy = std::min({ triangle[0].y, triangle[1].y, triangle[2].y }) + boxHeight / 2.;
+	if (
+		!(0 - windowWidth / 2. < boxPosx + boxWidth / 2. &&
+			0 + windowWidth / 2. > boxPosx - boxWidth / 2. &&
+			0 - windowHeight / 2. < boxPosy + boxHeight / 2. &&
+			windowHeight / 2. + 0 > boxPosy - boxHeight / 2.)
+		)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void Camera::handleMovement(Vector3 WSAD,int verticalMove, int mouseX, int mouseY,int dT)
