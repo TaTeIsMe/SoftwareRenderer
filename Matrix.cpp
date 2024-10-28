@@ -37,9 +37,9 @@ Matrix & Matrix::operator=(Matrix other)
     return *this;
 }
 
-double*& Matrix::operator [] (int index) const 
+double*& Matrix::operator [] (int index) const
 {
-    return  insides[index];
+    return insides[index];
 }
 
 Matrix & Matrix::operator *=(const Matrix &matrix) {
@@ -115,9 +115,9 @@ Matrix Matrix::transpose() const
 
 void Matrix::comout() const
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < width; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < height; j++)
         {
             std::cout << insides[i][j] << "   ";
         }
@@ -169,7 +169,37 @@ Matrix Matrix::zRotation( double angle){
     returnMatrix[1][1] = cos(angle);
     returnMatrix[2][2] = 1;
     return returnMatrix;
-};
+}
+Matrix Matrix::xRotation4D(double angle)
+{
+    Matrix returnMatrix(identityMatrix(4));
+    returnMatrix[1][1] = cos(angle);
+    returnMatrix[1][2] = -sin(angle);
+    returnMatrix[2][1] = sin(angle);
+    returnMatrix[2][2] = cos(angle);
+    return returnMatrix;
+}
+;
+
+Matrix Matrix::yRotation4D(double angle)
+{
+    Matrix returnMatrix(identityMatrix(4));
+    returnMatrix[0][0] = cos(angle);
+    returnMatrix[0][2] = sin(angle);
+    returnMatrix[2][0] = -sin(angle);
+    returnMatrix[2][2] = cos(angle);
+    return returnMatrix;
+}
+
+Matrix Matrix::zRotation4D(double angle)
+{
+    Matrix returnMatrix(identityMatrix(4));
+    returnMatrix[0][0] = cos(angle);
+    returnMatrix[0][1] = -sin(angle);
+    returnMatrix[1][0] = sin(angle);
+    returnMatrix[1][1] = cos(angle);
+    return returnMatrix;
+}
 
 Matrix Matrix::identityMatrix( int size) {
     Matrix returnMatrix(size, size);

@@ -22,6 +22,9 @@ public:
 	static Matrix xRotation(double angle);
 	static Matrix yRotation(double angle);
 	static Matrix zRotation(double angle);
+	static Matrix xRotation4D(double angle);
+	static Matrix yRotation4D(double angle);
+	static Matrix zRotation4D(double angle);
 	static Matrix identityMatrix(int size);
 };
 

@@ -8,6 +8,7 @@
 #include"EventHandler.h"
 #include"DeltaTime.h"
 #include"TimerHandler.h"
+#include"Vector4.h"
 #undef main
 
 int windowHeight = 480;
@@ -39,6 +40,7 @@ int main() {
 	scene1.camera.setPosition(Vector3(0,160,0));
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	while (eventHandler.getIsRunning())
 	{
 		eventHandler.handleEvents();
