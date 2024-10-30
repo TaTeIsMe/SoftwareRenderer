@@ -103,7 +103,7 @@ const Vector4 operator -(const Vector4& lhs, const Vector4& rhs) {
 
 Vector4 Vector4::crossProduct(Vector4 vec1, Vector4 vec2)
 {
-	return Vector3((vec1.y * vec2.z - vec1.z * vec2.y), -(vec1.x * vec2.z - vec1.z * vec2.x), (vec1.x * vec2.y - vec1.y * vec2.x));
+	return Vector4((vec1.y * vec2.z - vec1.z * vec2.y), -(vec1.x * vec2.z - vec1.z * vec2.x), (vec1.x * vec2.y - vec1.y * vec2.x));
 }
 
 Vector4 Vector4::crossProduct(Vector4 vec2) const

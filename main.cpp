@@ -9,6 +9,7 @@
 #include"DeltaTime.h"
 #include"TimerHandler.h"
 #include"Vector4.h"
+#include"Triangle4.h"
 #undef main
 
 int windowHeight = 480;
@@ -58,8 +59,7 @@ int main() {
 		vector<Triangle3D> triangles = scene1.objectsToSceneSpace();
 		for (int i = 0; i < triangles.size(); i++)
 		{
-			Triangle3D handledTriangle = triangles[i];
-			//handledTriangle = scene1.camera.convertToCameraSpace(handledTriangle);
+			Triangle4 handledTriangle = Triangle4(triangles[i]);
 			//if (scene1.camera.isTriangleFacingAway(handledTriangle)) continue; 
 			//if (scene1.camera.isTriangleTooNear(handledTriangle)) continue; 
 			//handledTriangle = scene1.camera.triangle3Dto2Dz(handledTriangle);

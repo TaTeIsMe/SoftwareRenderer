@@ -1,6 +1,7 @@
 #pragma once
 #include "Triangle2D.h"
 #include "GameObject.h"
+#include "Triangle4.h"
 #include<vector>
 class Camera : public GameObject {
 	Matrix transpose;

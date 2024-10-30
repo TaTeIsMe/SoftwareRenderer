@@ -54,7 +54,6 @@ Triangle3D Camera::convertToCameraSpace(Triangle3D worldTriangle) const
 	return worldTriangle;
 }
 
-
 std::vector<Triangle3D> Camera::convertToCameraSpace(std::vector<Triangle3D> worldTriangles) const
 {
 	for (int i = 0; i < worldTriangles.size(); i++)

@@ -8,8 +8,8 @@ struct Vector4
 	double w;
 	Vector4();
 	Vector4(double x, double y, double z, double w = 1);
-	Vector4(const struct Vector3&);
-	Vector4(const class Matrix&);
+	explicit Vector4(const struct Vector3&);
+	explicit Vector4(const class Matrix&);
 	double length()const;
 	static double distance(Vector4 vec1, Vector4 vec2);
 	static Vector4 crossProduct(Vector4 vec1, Vector4 vec2);
