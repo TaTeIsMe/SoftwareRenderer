@@ -59,12 +59,12 @@ int main() {
 		for (int i = 0; i < triangles.size(); i++)
 		{
 			Triangle3D handledTriangle = triangles[i];
-			handledTriangle = scene1.camera.convertToCameraSpace(handledTriangle);
-			if (scene1.camera.isTriangleFacingAway(handledTriangle)) continue; 
-			if (scene1.camera.isTriangleTooNear(handledTriangle)) continue; 
-			handledTriangle = scene1.camera.triangle3Dto2Dz(handledTriangle);
-			if (scene1.camera.is2DTriangleOutsideOfScreen(handledTriangle))continue;
-			rasterizer.drawTrianglez(handledTriangle);
+			//handledTriangle = scene1.camera.convertToCameraSpace(handledTriangle);
+			//if (scene1.camera.isTriangleFacingAway(handledTriangle)) continue; 
+			//if (scene1.camera.isTriangleTooNear(handledTriangle)) continue; 
+			//handledTriangle = scene1.camera.triangle3Dto2Dz(handledTriangle);
+			//if (scene1.camera.is2DTriangleOutsideOfScreen(handledTriangle))continue;
+			//rasterizer.drawTrianglez(handledTriangle);
 		}
 
 		//rasterizer.drawScenezWire(triangles);

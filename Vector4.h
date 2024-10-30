@@ -2,18 +2,14 @@
 #include "Matrix.h"
 struct Vector4
 {
-	Matrix vectorMatrix;
+	double x;
+	double y;
+	double z;
+	double w;
 	Vector4();
-	Vector4(double x, double y, double z);
+	Vector4(double x, double y, double z, double w = 1);
 	Vector4(const struct Vector3&);
-	const double& x() const;
-	const double& y() const;
-	const double& z() const;
-	const double& w() const;
-	double& x();
-	double& y();
-	double& z();
-	double& w();
+	Vector4(const class Matrix&);
 	double length()const;
 	static double distance(Vector4 vec1, Vector4 vec2);
 	static Vector4 crossProduct(Vector4 vec1, Vector4 vec2);
