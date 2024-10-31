@@ -56,11 +56,11 @@ Vector4& Vector4::operator +=(const Vector4& vector) {
 	return *this;
 };
 
-//don't use this, use scaling transformation instead
 Vector4& Vector4::operator *=(const double& scalar) {
 	x *= scalar;
 	y *= scalar;
 	z *= scalar;
+	w *= scalar;
 	return *this;
 };
 
@@ -111,7 +111,6 @@ Vector4 Vector4::crossProduct(Vector4 vec2) const
 	return crossProduct(*this, vec2);
 }
 
-//confusing name. this makes the lenght of the 3D vector 1
 Vector4 Vector4::normalized() const
 {
 	if (length() == 0)return Vector4(this->x, this->y, this->z);

@@ -1,7 +1,7 @@
 #pragma once
 class Matrix
 {
-private:
+protected:
 	int height;
 	int width;
 	double **insides;

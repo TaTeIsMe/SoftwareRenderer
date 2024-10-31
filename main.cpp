@@ -1,5 +1,6 @@
 #include<SDL.h>
 #include"WindowHandler.h"
+#include"GeometryProcessor.h"
 #include"Rasterizer.h"
 #include"Matrix.h"
 #include"Scene.h"
@@ -10,12 +11,17 @@
 #include"TimerHandler.h"
 #include"Vector4.h"
 #include"Triangle4.h"
+#include"Camera4.h"
 #undef main
 
 int windowHeight = 480;
 int windowWidth = 680;
 double cameraPlaneDistance = 200;
+double nearPlane = 1;
+double farPlane = 9999;
 double movementSpeed = 1;
+double fov = 1.5708;
+double aspectRatio = windowWidth/windowHeight;
 using namespace std;
 
 #include <vector>
@@ -30,6 +36,7 @@ int main() {
 	}
 	TimerHandler timerHandler;
 	WindowHandler windowHandler;
+	GeometryProcessor geometryProcessor;
 	Rasterizer rasterizer(windowHandler);
 	EventHandler eventHandler;
 	Scene scene1;
@@ -55,19 +62,24 @@ int main() {
 		rasterizer.cleanzbuffer();
 		windowHandler.lockScreenTexture();
 
-		//the graphics pipeline
 		vector<Triangle3D> triangles = scene1.objectsToSceneSpace();
+		//the graphics pipeline
+		Camera4 camera4 = Camera4(scene1.camera);
 		for (int i = 0; i < triangles.size(); i++)
 		{
 			Triangle4 handledTriangle = Triangle4(triangles[i]);
-			//if (scene1.camera.isTriangleFacingAway(handledTriangle)) continue; 
-			//if (scene1.camera.isTriangleTooNear(handledTriangle)) continue; 
-			//handledTriangle = scene1.camera.triangle3Dto2Dz(handledTriangle);
-			//if (scene1.camera.is2DTriangleOutsideOfScreen(handledTriangle))continue;
-			//rasterizer.drawTrianglez(handledTriangle);
+			handledTriangle = geometryProcessor.convertToCameraSpace(handledTriangle,camera4);
+			handledTriangle = geometryProcessor.convertToClipSpace(handledTriangle);
+			vector<Triangle4> clippedTriangles = geometryProcessor.clipTriangle(handledTriangle);
+			if (clippedTriangles.empty())continue;
+			for (int i = 0; i < clippedTriangles.size(); i++)
+			{
+				handledTriangle = geometryProcessor.clipTriangle(handledTriangle).back();
+				Triangle3D testTriangle = Triangle3D(geometryProcessor.mapToScreen(handledTriangle));
+				rasterizer.drawTrianglez(testTriangle);
+			}
+			
 		}
-
-		//rasterizer.drawScenezWire(triangles);
 
 		windowHandler.unlockScreenTexture();
 		windowHandler.updateScreen();
