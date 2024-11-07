@@ -1,6 +1,8 @@
 #include "Vector3.h"
 #include<iostream>
 #include"Vector2.h"
+#include<cmath>
+
 Vector3& Vector3::operator *=(const double& scalar) {
 	x *= scalar;
 	y *= scalar;

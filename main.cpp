@@ -1,15 +1,12 @@
-#include<SDL.h>
+#include<SDL2/SDL.h>
 #include"WindowHandler.h"
 #include"GeometryProcessor.h"
 #include"Rasterizer.h"
-#include"Matrix.h"
 #include"Scene.h"
 #include"GameObject.h"
-#include"TestCube.h"
 #include"EventHandler.h"
 #include"DeltaTime.h"
 #include"TimerHandler.h"
-#include"Vector4.h"
 #include"Triangle4.h"
 #include"Camera4.h"
 #undef main
@@ -25,7 +22,6 @@ double aspectRatio = windowWidth/windowHeight;
 using namespace std;
 
 #include <vector>
-#include <algorithm>
 
 int main() {
 
@@ -43,7 +39,7 @@ int main() {
 	DeltaTime dT;
 	timerHandler.addTimers(6);
 
-	scene1.objects.push_back(loadGameObject("objects\\dartmonke.obj", "objects\\dartskin.bmp",400));
+	scene1.objects.push_back(loadGameObject("objects/mimi.obj", "objects/mimi1.bmp",400));
 
 	scene1.camera.setPosition(Vector3(0,160,0));
 
@@ -54,8 +50,7 @@ int main() {
 		eventHandler.handleEvents();
 		scene1.camera.handleMovement(eventHandler.getWSAD(),eventHandler.getVerticalMove(), eventHandler.getMousedX(), eventHandler.getMousedY(), dT.getdT());
 		scene1.camera.calculateTranspose();
-
-		//scene1.objects[0].rotate(Matrix::yRotation(0.1));
+		scene1.objects[0].rotate(Matrix::yRotation(0.1));
 
 		dT.start();
 		windowHandler.clearScreen();
@@ -65,11 +60,14 @@ int main() {
 		vector<Triangle3D> triangles = scene1.objectsToSceneSpace();
 		//the graphics pipeline
 		Camera4 camera4 = Camera4(scene1.camera);
+		camera4.calculateInverse();
 		for (int i = 0; i < triangles.size(); i++)
 		{
 			Triangle4 handledTriangle = Triangle4(triangles[i]);
 			handledTriangle = geometryProcessor.convertToCameraSpace(handledTriangle,camera4);
+			if(geometryProcessor.isTriangleFacingAway(handledTriangle))continue;
 			handledTriangle = geometryProcessor.convertToClipSpace(handledTriangle);
+			if(geometryProcessor.isTriangleOutsideOfFrustrum(handledTriangle))continue;
 			vector<Triangle4> clippedTriangles = geometryProcessor.clipTriangle(handledTriangle);
 			if (clippedTriangles.empty())continue;
 			for (int i = 0; i < clippedTriangles.size(); i++)

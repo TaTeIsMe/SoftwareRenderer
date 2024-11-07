@@ -4,9 +4,10 @@
 #include "RigidBody.h"
 struct Camera4
 {
+	RigidBody inverse;
 	RigidBody rigidBody;
-public:
 	Camera4();
 	explicit Camera4(const class Camera&);
+	RigidBody calculateInverse();
 };
 

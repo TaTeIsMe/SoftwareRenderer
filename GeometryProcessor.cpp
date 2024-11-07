@@ -1,5 +1,5 @@
 #include "GeometryProcessor.h"
-#include"iostream";
+#include"iostream"
 extern double fov;
 extern double aspectRatio;
 extern double nearPlane;
@@ -7,7 +7,8 @@ extern double farPlane;
 
 Triangle4 GeometryProcessor::convertToCameraSpace(Triangle4 worldTriangle, Camera4 camera4) const
 {
-    worldTriangle = worldTriangle.transformed(camera4.rigidBody.getInverse());
+    worldTriangle = worldTriangle.transformed(camera4.inverse);
+	worldTriangle.normal *= camera4.inverse;
     return worldTriangle;
 }
 
@@ -31,17 +32,20 @@ Triangle4 GeometryProcessor::convertToClipSpace(Triangle4 cameraTriangle) const
 
 std::vector<Triangle4> GeometryProcessor::clipTriangle(Triangle4 clipTriangle) const
 {
-	for (int i = 0; i < 3; i++)
-	{
-		if (!(clipTriangle[i].x > -clipTriangle[i].w &&
-			clipTriangle[i].x < clipTriangle[i].w &&
-			clipTriangle[i].y > -clipTriangle[i].w &&
-			clipTriangle[i].y < clipTriangle[i].w &&
-			clipTriangle[i].z > -clipTriangle[i].w &&
-			clipTriangle[i].z < clipTriangle[i].w)
-			)return {};
-	}
+
 	return { clipTriangle };
+}
+
+bool GeometryProcessor::isTriangleOutsideOfFrustrum(Triangle4 clipTriangle) const{
+	if(
+		(clipTriangle[0].x > clipTriangle[0].w && clipTriangle[1].x > clipTriangle[1].w && clipTriangle[2].x > clipTriangle[2].w) ||
+		(clipTriangle[0].x < -clipTriangle[0].w && clipTriangle[1].x < -clipTriangle[1].w && clipTriangle[2].x < -clipTriangle[2].w) ||
+		(clipTriangle[0].y > clipTriangle[0].w && clipTriangle[1].y > clipTriangle[1].w && clipTriangle[2].y > clipTriangle[2].w) ||
+		(clipTriangle[0].y < -clipTriangle[0].w && clipTriangle[1].y < -clipTriangle[1].w && clipTriangle[2].y < -clipTriangle[2].w) ||
+		(clipTriangle[0].z > clipTriangle[0].w && clipTriangle[1].z > clipTriangle[1].w && clipTriangle[2].z > clipTriangle[2].w) ||
+		(clipTriangle[0].z < -clipTriangle[0].w && clipTriangle[1].z < -clipTriangle[1].w && clipTriangle[2].z < -clipTriangle[2].w)
+	)return true;
+	return false;
 }
 
 Triangle4 GeometryProcessor::mapToScreen(Triangle4 triangle) const
@@ -52,4 +56,13 @@ Triangle4 GeometryProcessor::mapToScreen(Triangle4 triangle) const
 		triangle[i] *= 200;
 	}
 	return triangle;
+}
+
+bool GeometryProcessor::isTriangleFacingAway(Triangle4 triangle) const
+{
+		if (Vector4::dotProduct(triangle[0], triangle.normal) >= 0)
+		{
+			return true;
+		}
+	return false;
 }

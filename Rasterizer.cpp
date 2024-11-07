@@ -4,7 +4,7 @@
 #include <algorithm>
 #include<iostream>
 #include<mutex>
-
+#include<vector>
 #include <chrono>
 
 extern double cameraPLainDistance;
@@ -564,3 +564,4 @@ void Rasterizer::drawScenezWire(const std::vector<Triangle3D>& triangles)const {
         drawTrianglezWire(triangles[i]/*, zBuffer*/);
     }
 }
+

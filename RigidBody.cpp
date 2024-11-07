@@ -35,6 +35,11 @@ RigidBody::RigidBody(const Matrix& rotation, const Vector4& position): Matrix(id
 	insides[2][3] = position.z;
 }
 
+RigidBody::RigidBody(const Matrix & matrix): Matrix(matrix)
+{
+	if(height != 4 || width != 4) std::cerr << "this rigidBody has wrong dimensions!";
+}
+
 Matrix RigidBody::getRotationMatrix()const
 {
 	Matrix rotationMatrix = Matrix::identityMatrix(4);

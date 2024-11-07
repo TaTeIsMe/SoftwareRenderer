@@ -1,7 +1,8 @@
 #include "Matrix.h"
 #include<iostream>
 #include<algorithm>
-
+#include<cmath>
+using namespace std;
 Matrix::Matrix( int height, int width)
 {
     this->height = height;

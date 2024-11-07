@@ -9,5 +9,6 @@ public:
 	Triangle4 convertToClipSpace(Triangle4 cameraTriangle)const;
 	std::vector<Triangle4> clipTriangle(Triangle4 clipTriangle)const;
 	Triangle4 mapToScreen(Triangle4 triangle)const;
+    bool isTriangleFacingAway(Triangle4 triangle) const;
+	bool isTriangleOutsideOfFrustrum(Triangle4 triangle)const;
 };
-

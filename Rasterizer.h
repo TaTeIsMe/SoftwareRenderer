@@ -3,7 +3,6 @@
 #include <vector>
 #include "Triangle2D.h"
 #include "Triangle3D.h"
-
 extern int windowWidth;
 class Rasterizer
 {

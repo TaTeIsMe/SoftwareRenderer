@@ -1,5 +1,5 @@
 #include "EventHandler.h"
-#include"SDL.h"
+#include"SDL2/SDL.h"
 
 void EventHandler::handleEvents()
 {
