@@ -13,7 +13,7 @@ class Rasterizer
 public:
 	void drawTrianglezWire(Triangle3D triangle) const;
 	void drawTriangle(Triangle2D triangle) const;
-	void drawTrianglez(Triangle3D triangle);
+	void drawTrianglez(Triangle3D& triangle);
 	Rasterizer(WindowHandler& windowHandler);
 	~Rasterizer();
 	void cleanzbuffer();
@@ -21,7 +21,7 @@ public:
 	void drawLine(Vector2 begginingPoint, Vector2 endingPoint) const;
 	void drawTrianglezBBox(Triangle3D triangle);
 	void drawScene(std::vector<Triangle2D> triangles)const;
-	void drawScenez(const std::vector<Triangle3D>& triangles);
+	void drawScenez( std::vector<Triangle3D>& triangles);
 	void drawScenezBBox(const std::vector<Triangle3D>& triangles);
 	void drawScenezWire(const std::vector<Triangle3D>& triangles) const;
 };

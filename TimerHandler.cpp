@@ -36,5 +36,10 @@ void TimerHandler::startTimer(int index)
 
 void TimerHandler::printTimer(int index, string messege, std::ostream& os) const
 {
-	os << std::chrono::duration_cast<std::chrono::microseconds>( std::chrono::steady_clock::now() - timers[index] ).count() << "\n";
+	os << messege<< " " << std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - timers[index]).count() << "\n";
+}
+
+std::chrono::nanoseconds TimerHandler::getTimePassed(int index) const
+{
+	return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - timers[index]);
 }

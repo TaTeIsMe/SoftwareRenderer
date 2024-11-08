@@ -274,7 +274,7 @@ void Rasterizer::drawTexuredPointZ(int y, int x, float uprim, float vprim, float
 //    SDL_GetRGB(data, triangle.texture->format, &color.r, &color.g, &color.b);
 //    return SDL_Color();
 //}
-void Rasterizer::drawTrianglez(Triangle3D triangle)
+void Rasterizer::drawTrianglez(Triangle3D& triangle)
 {
     //sort vertices by ascending Y order
     std::sort(std::begin(triangle.vertices), std::end(triangle.vertices),
@@ -544,7 +544,7 @@ void Rasterizer::drawScene(std::vector<Triangle2D> triangles)const{
     }
 }
 
-void Rasterizer::drawScenez(const std::vector<Triangle3D>& triangles) {
+void Rasterizer::drawScenez(std::vector<Triangle3D>& triangles) {
     for (int i = 0; i < triangles.size(); i++)
     {
         drawTrianglez(triangles[i]);

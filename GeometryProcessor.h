@@ -4,11 +4,20 @@
 #include<vector>
 class GeometryProcessor
 {
+	std::vector<Vertex4>oldVertices;
+	std::vector<Vertex4>newVertices;
+	void clipToRightPlane();
+	void clipToLeftPlane();
+	void clipToTopPlane();
+	void clipToBottomPlane();
+	void clipToNearPlane();
+	
 public:
-	Triangle4 convertToCameraSpace(Triangle4 worldTriangle, Camera4 camera4)const;
-	Triangle4 convertToClipSpace(Triangle4 cameraTriangle)const;
-	std::vector<Triangle4> clipTriangle(Triangle4 clipTriangle)const;
-	Triangle4 mapToScreen(Triangle4 triangle)const;
-    bool isTriangleFacingAway(Triangle4 triangle) const;
-	bool isTriangleOutsideOfFrustrum(Triangle4 triangle)const;
+	Triangle4& convertToCameraSpace(Triangle4& worldTriangle,const Camera4& camera4)const;
+	Triangle4& convertToClipSpace(Triangle4& cameraTriangle)const;
+	std::vector<Triangle4>& clipTriangle(std::vector<Triangle4>& outputVector, Triangle4& clipTriangle);
+	Triangle4& mapToScreen(Triangle4& triangle)const;
+    bool isTriangleFacingAway(const Triangle4& triangle) const;
+	bool isTriangleOutsideOfFrustrum(const Triangle4& triangle)const;
+	bool isTriangleEntirelyInsideFrustrum(const Triangle4& triangle)const;
 };

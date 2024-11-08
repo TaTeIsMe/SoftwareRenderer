@@ -1,5 +1,5 @@
 #pragma once
-#include<SDL2/SDL.h>
+#include<SDL.h>
 #include"Vertex4.h"
 #include"Triangle3D.h"
 

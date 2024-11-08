@@ -30,19 +30,18 @@ Triangle2D Camera::triangle3Dto2D(Triangle3D worldTriangle) const {
 	return returnTriangle;
 }
 
-Triangle3D Camera::triangle3Dto2Dz(Triangle3D worldTriangle) const {
-	Triangle3D returnTriangle(worldTriangle);
+Triangle3D& Camera::triangle3Dto2Dz(Triangle3D& worldTriangle) const {
 	for (int i = 0; i < 3; i++)
 	{
 		//translate to screen coords
-		returnTriangle[i].x = planePos.z / worldTriangle[i].z * worldTriangle[i].x + planePos.x;
-		returnTriangle[i].y = planePos.z / worldTriangle[i].z * worldTriangle[i].y + planePos.y;
-		returnTriangle[i].z = worldTriangle[i].z;
+		worldTriangle[i].x = planePos.z / worldTriangle[i].z * worldTriangle[i].x + planePos.x;
+		worldTriangle[i].y = planePos.z / worldTriangle[i].z * worldTriangle[i].y + planePos.y;
+		worldTriangle[i].z = worldTriangle[i].z;
 	}
-	return returnTriangle;
+	return worldTriangle;
 }
 
-Triangle3D Camera::convertToCameraSpace(Triangle3D worldTriangle) const
+Triangle3D& Camera::convertToCameraSpace(Triangle3D& worldTriangle) const
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -77,7 +76,7 @@ std::vector<Triangle3D> Camera::backfaceCulling(std::vector<Triangle3D> triangle
 	return temp;
 }
 
-bool Camera::isTriangleFacingAway( Triangle3D triangle) const
+bool Camera::isTriangleFacingAway(const Triangle3D& triangle) const
 {
 		if (Vector3::dotProduct(triangle[0], triangle.normal) >= 0)
 		{
@@ -105,7 +104,7 @@ std::vector<Triangle3D> Camera::nearClipping(std::vector<Triangle3D> triangles) 
 	return temp;
 }
 
-bool Camera::isTriangleTooNear(Triangle3D triangle) const
+bool Camera::isTriangleTooNear(const Triangle3D& triangle) const
 {
 		for (int k = 0; k < 3; k++)
 		{
@@ -188,7 +187,7 @@ void Camera::clipTriangleToSides2D(Triangle3D triangle, std::vector<Triangle3D>&
 	worldTriangles.push_back(triangle);
 }
 
-bool Camera::is2DTriangleOutsideOfScreen(Triangle3D triangle) const
+bool Camera::is2DTriangleOutsideOfScreen(const Triangle3D& triangle) const
 {
 	int dx1 = abs(triangle[0].x - triangle[1].x);
 	int dx2 = abs(triangle[0].x - triangle[2].x);

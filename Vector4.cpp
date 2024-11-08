@@ -39,20 +39,20 @@ double Vector4::dotProduct(Vector4 vec1, Vector4 vec2)
 	return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
 }
 
-//don't use this, use translation transformation instead
 Vector4& Vector4::operator-=(const Vector4& vector)
 {
 	x -= vector.x;
 	y -= vector.y;
 	z -= vector.z;
+	w -= vector.w;
 	return *this;
 }
 
-//don't use this, use translation transformation instead
 Vector4& Vector4::operator +=(const Vector4& vector) {
 	x += vector.x;
 	y += vector.y;
 	z += vector.z;
+	w += vector.w;
 	return *this;
 };
 
@@ -79,12 +79,10 @@ Vector4& Vector4::operator *=(const Matrix& transformation) {
 	return *this;
 }
 
-//don't use this, use scaling transformation instead
 const Vector4 operator *(const Vector4& lhs, const double& rhs) {
 	return Vector4(lhs) *= rhs;
 };
 
-//don't use this, use scaling transformation instead
 const Vector4 operator *(const double& lhs, const Vector4& rhs) {
 	return Vector4(rhs) *= lhs;
 };
@@ -92,11 +90,11 @@ const Vector4 operator *(const double& lhs, const Vector4& rhs) {
 const Vector4 operator *(const Vector4& lhs, const Matrix& rhs) {
 	return Vector4(lhs) *= rhs;
 };
-//don't use this, use translation transformation instead
+
 const Vector4 operator +(const Vector4& lhs, const Vector4& rhs) {
 	return Vector4(lhs) += rhs;
 };
-//don't use this, use translation transformation instead
+
 const Vector4 operator -(const Vector4& lhs, const Vector4& rhs) {
 	return Vector4(lhs) -= rhs;
 };
