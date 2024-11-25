@@ -18,7 +18,7 @@ double nearPlane = 1;
 double farPlane = 9999;
 double movementSpeed = 1;
 double fov = 1.5708;
-double aspectRatio = windowWidth/(doubel)windowHeight;
+double aspectRatio = windowWidth/(double)windowHeight;
 using namespace std;
 
 #include <vector>
