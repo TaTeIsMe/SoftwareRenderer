@@ -10,15 +10,15 @@
 #include"TimerHandler.h"
 #include"Triangle4.h"
 #include"Camera4.h"
-#include"Pixel.h"
-#include"PixelProcessor.h"
+#include"Fragment.h"
+#include"FragmentProcessor.h"
 #undef main
 
 int windowHeight = 480;
 int windowWidth = 680;
 double cameraPlaneDistance = 200;
 double nearPlane = 200;
-double farPlane = 9999;
+double farPlane = 49999;
 double movementSpeed = 1;
 double fov = 1.5708;
 double aspectRatio = windowWidth/(double)windowHeight;
@@ -37,7 +37,7 @@ int main() {
 	WindowHandler windowHandler;
 	GeometryProcessor geometryProcessor;
 	RasterizationProcessor rasterizationProcessor;
-	PixelProcessor pixelProcessor(windowHandler);
+	FragmentProcessor fragmentProcessor(windowHandler);
 	Rasterizer rasterizer(windowHandler);
 	EventHandler eventHandler;
 	Scene scene1;
@@ -56,16 +56,6 @@ int main() {
 	scene1.objects[2].rotate(Matrix::yRotation(2 * M_PI / 2));
 	scene1.objects[2].setPosition(Vector3(10, 200, 120));
 
-	Triangle3 testTriangle = Triangle3(Vertex3(0,0,0,0.5,0.5),Vertex3(300,0,0,0.75,0.5),Vertex3(0,300,0,0.5,0.75),Vector3(0,0,-1),scene1.objects[0].GetShape()[0].texture);
-	Triangle3 testTriangle2 = testTriangle;
-	for (int i = 0; i < 3; i++)
-	{
-		testTriangle2[i] *= Matrix::yRotation(M_PI /2);
-	}
-	testTriangle2.normal *= Matrix::yRotation(M_PI / 2);
-	testTriangle2 = testTriangle2 + Vector3(50,0,0);
-	testTriangle2 = testTriangle2 + Vector3(0, 0, 100);
-
 	scene1.camera.setPosition(Vector3(0,160,0));
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -79,7 +69,7 @@ int main() {
 		dT.start();
 		windowHandler.clearScreen();
 		rasterizer.cleanzbuffer();
-		pixelProcessor.cleanZBuffer();
+		fragmentProcessor.cleanZBuffer();
 		windowHandler.lockScreenTexture();
 		
 		int totaltime0 = 0;
@@ -95,7 +85,7 @@ int main() {
 		//the graphics pipeline
 		Camera4 camera4 = Camera4(scene1.camera);
 		vector<Triangle4> clippedTriangles;
-		vector<Pixel> pixels;
+		vector<Fragment> fragments;
 		Triangle4 handledTriangle;
 		camera4.calculateInverse();
 		int j = 0;
@@ -124,48 +114,23 @@ int main() {
 				handledTriangle = clippedTriangles[i];
 				geometryProcessor.mapToScreen(handledTriangle);
 				timerHandler.startTimer(0);
-				rasterizationProcessor.rasterizeTriangle(handledTriangle,pixels);
+				rasterizationProcessor.rasterizeTriangle(handledTriangle,fragments);
 				totaltime5 += timerHandler.getTimePassed(0).count();
 				timerHandler.startTimer(0);
-				pixelProcessor.drawPixels(pixels);
+				fragmentProcessor.drawFragments(fragments);
 				totaltime6 += timerHandler.getTimePassed(0).count();
 				j++;
 			}
 		}
 
-		/*for (int i = 0; i < triangles.size(); i++)
-		{
-			Triangle3 handledTriangle = triangles[i];
-			timerHandler.startTimer(0);
-			handledTriangle = scene1.camera.convertToCameraSpace(handledTriangle);
-			totaltime0 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
-			if (scene1.camera.isTriangleFacingAway(handledTriangle)) continue;
-			totaltime1 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
-			if (scene1.camera.isTriangleTooNear(handledTriangle)) continue;
-			totaltime2 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
-			handledTriangle = scene1.camera.triangle3to2Dz(handledTriangle);
-			totaltime3 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
-			if (scene1.camera.is2DTriangleOutsideOfScreen(handledTriangle))continue;
-			totaltime4 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
-			rasterizer.drawTrianglez(handledTriangle);
-			totaltime5 += timerHandler.getTimePassed(0).count();
-			j++;
-		}*/
-
-
-		cout << "trianglecount: " << j << "\n";
-		cout << "stage 0: " << totaltime0 << "\n";
-		cout << "stage 1: " << totaltime1 << "\n";
-		cout << "stage 2: " << totaltime2 << "\n";
-		cout << "stage 3: " << totaltime3 << "\n";
-		cout << "stage 4: " << totaltime4 << "\n";
-		cout << "stage 5: " << totaltime5 << "\n";
-		cout << "stage 6: " << totaltime6 << "\n";
+		//cout << "trianglecount: " << j << "\n";
+		//cout << "stage 0: " << totaltime0 << "\n";
+		//cout << "stage 1: " << totaltime1 << "\n";
+		//cout << "stage 2: " << totaltime2 << "\n";
+		//cout << "stage 3: " << totaltime3 << "\n";
+		//cout << "stage 4: " << totaltime4 << "\n";
+		//cout << "stage 5: " << totaltime5 << "\n";
+		//cout << "stage 6: " << totaltime6 << "\n";
 
 		windowHandler.unlockScreenTexture();
 		windowHandler.updateScreen();

@@ -89,7 +89,7 @@ LineVars::LineVars(Vertex4 vertex1, Vertex4 vertex2) {
     wprim = 1 / vertex1.w;
 }
 
-bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Surface* texture, std::vector<Pixel>& pixels) {
+bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Surface* texture, std::vector<Fragment>& fragments) {
     for (line.i; line.i < line.dx; line.i++)
     {
         if (line.pk < 0) {
@@ -100,7 +100,7 @@ bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Su
                 line.wprim -= gra.doneOverWdY;
                 line.z -= dyz;
                 line.pk = line.pk + 2 * line.dy;
-                pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
+                fragments.push_back(Fragment(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
                 line.i++;
                 return true;
             }
@@ -110,7 +110,7 @@ bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Su
                     :
                     (line.drawnPoint.x--, line.z -= dxz, line.wprim -= gra.doneOverWdX, line.uprim -= gra.duOverWdX, line.vprim -= gra.dvOverWdX);
                 line.pk = line.pk + 2 * line.dy;
-                pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
+                fragments.push_back(Fragment(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
             }
         }
         else {
@@ -124,7 +124,7 @@ bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Su
             line.wprim -= gra.doneOverWdY;
             line.z -= dyz;
             line.pk = line.pk + 2 * line.dy - 2 * line.dx;
-            pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
+            fragments.push_back(Fragment(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
             line.i++;
             return true;
         };
@@ -132,7 +132,7 @@ bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Su
     return false;
 }
 
-void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& gra, float dxz, SDL_Surface* texture, std::vector<Pixel>& pixels) {
+void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& gra, float dxz, SDL_Surface* texture, std::vector<Fragment>& fragments) {
     float scanw = line1.z;
     float scanuprim = line1.uprim;
     float scanvprim = line1.vprim;
@@ -142,21 +142,21 @@ void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& g
         for (int k = line1.drawnPoint.x + 1; k <= (int)line2.drawnPoint.x - 1; k++)
         {
             scanw += dxz, scanuprim += gra.duOverWdX, scanwprim += gra.doneOverWdX, scanvprim += gra.dvOverWdX;
-            pixels.push_back(Pixel(k, line2.drawnPoint.y, scanuprim, scanvprim, scanwprim, scanw, texture));
+            fragments.push_back(Fragment(k, line2.drawnPoint.y, scanuprim, scanvprim, scanwprim, scanw, texture));
         }
     }
     else {
         for (int k = line1.drawnPoint.x - 1; k >= (int)line2.drawnPoint.x+1; k--)
         {
             scanw -= dxz, scanuprim -= gra.duOverWdX, scanwprim -= gra.doneOverWdX, scanvprim -= gra.dvOverWdX;
-            pixels.push_back(Pixel(k, line2.drawnPoint.y, scanuprim, scanvprim, scanwprim, scanw, texture));
+            fragments.push_back(Fragment(k, line2.drawnPoint.y, scanuprim, scanvprim, scanwprim, scanw, texture));
         }
     }
 };
 
-std::vector<Pixel> RasterizationProcessor::rasterizeTriangle(Triangle4& triangle, std::vector<Pixel>& pixels)
+std::vector<Fragment> RasterizationProcessor::rasterizeTriangle(Triangle4& triangle, std::vector<Fragment>& fragments)
 {
-    pixels.clear();
+    fragments.clear();
 
     //sort vertices by ascending Y order
     std::sort(std::begin(triangle.vertices), std::end(triangle.vertices),
@@ -177,16 +177,16 @@ std::vector<Pixel> RasterizationProcessor::rasterizeTriangle(Triangle4& triangle
     LineVars line2(triangle[2], triangle[1]);
     gradients gra(triangle);
 
-    while (incrementLine(line2, gra, dyz, dxz,triangle.texture, pixels)) {
-        incrementLine(line1, gra, dyz, dxz,triangle.texture, pixels);
-        drawScanLine(line1,line2, gra, dxz,triangle.texture, pixels);
+    while (incrementLine(line2, gra, dyz, dxz,triangle.texture, fragments)) {
+        incrementLine(line1, gra, dyz, dxz,triangle.texture, fragments);
+        drawScanLine(line1,line2, gra, dxz,triangle.texture, fragments);
     }
     line2 = LineVars(triangle[1], triangle[0]);
 
-    while (incrementLine(line2, gra, dyz, dxz,triangle.texture, pixels)) {
-        incrementLine(line1, gra, dyz, dxz,triangle.texture, pixels);
-        drawScanLine(line1,line2, gra, dxz,triangle.texture, pixels);
+    while (incrementLine(line2, gra, dyz, dxz,triangle.texture, fragments)) {
+        incrementLine(line1, gra, dyz, dxz,triangle.texture, fragments);
+        drawScanLine(line1,line2, gra, dxz,triangle.texture, fragments);
     }
 
-	return pixels;
+	return fragments;
 }

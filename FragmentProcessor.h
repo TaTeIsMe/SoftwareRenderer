@@ -1,17 +1,17 @@
 #pragma once
 #include "WindowHandler.h"
 #include<vector>
-#include"Pixel.h"
-class PixelProcessor
+#include"Fragment.h"
+class FragmentProcessor
 {
 private:
 public:
 	Uint32 getpixel(SDL_Surface* surface, int x, int y);
 	WindowHandler& windowHandler;
 	float* zbuffer;
-	void drawPixels(const std::vector<Pixel>& pixels);
+	void drawFragments(const std::vector<Fragment>& fragments);
 	void cleanZBuffer();
-	PixelProcessor(WindowHandler& windowHandler);
-	~PixelProcessor();
+	FragmentProcessor(WindowHandler& windowHandler);
+	~FragmentProcessor();
 };
 
