@@ -1,4 +1,5 @@
 #pragma once
+#include <initializer_list>
 class Matrix
 {
 protected:
@@ -8,6 +9,7 @@ protected:
 public:
 	Matrix(int rows, int cols);
 	Matrix(const Matrix& other);
+	Matrix(std::initializer_list<std::initializer_list<double>> init);
 	Matrix & operator=(Matrix other);
 	friend void swap(Matrix& first, Matrix& second);
 	~Matrix();
@@ -19,12 +21,13 @@ public:
 	Matrix inverse()const;
 	Matrix transpose()const;
 	void comout()const;
+	static Matrix translation4(double x, double y, double z);
 	static Matrix xRotation(double angle);
 	static Matrix yRotation(double angle);
 	static Matrix zRotation(double angle);
-	static Matrix xRotation4D(double angle);
-	static Matrix yRotation4D(double angle);
-	static Matrix zRotation4D(double angle);
+	static Matrix xRotation4(double angle);
+	static Matrix yRotation4(double angle);
+	static Matrix zRotation4(double angle);
 	static Matrix identityMatrix(int size);
 };
 

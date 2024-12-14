@@ -1,5 +1,5 @@
 #include "Camera.h"
-#include "Triangle3D.h"
+#include "Triangle3.h"
 #include<iostream>
 #include<chrono>
 #include<algorithm>
@@ -8,7 +8,7 @@ extern double movementSpeed;
 extern int windowWidth;
 extern int windowHeight;
 
-Triangle2D Camera::triangle3Dto2D(Triangle3D worldTriangle) const {
+Triangle2D Camera::triangle3to2D(Triangle3 worldTriangle) const {
 	Triangle2D returnTriangle;
 
 	for (int i = 0; i < 3; i++)
@@ -30,7 +30,7 @@ Triangle2D Camera::triangle3Dto2D(Triangle3D worldTriangle) const {
 	return returnTriangle;
 }
 
-Triangle3D& Camera::triangle3Dto2Dz(Triangle3D& worldTriangle) const {
+Triangle3& Camera::triangle3to2Dz(Triangle3& worldTriangle) const {
 	for (int i = 0; i < 3; i++)
 	{
 		//translate to screen coords
@@ -41,7 +41,7 @@ Triangle3D& Camera::triangle3Dto2Dz(Triangle3D& worldTriangle) const {
 	return worldTriangle;
 }
 
-Triangle3D& Camera::convertToCameraSpace(Triangle3D& worldTriangle) const
+Triangle3& Camera::convertToCameraSpace(Triangle3& worldTriangle) const
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -53,7 +53,7 @@ Triangle3D& Camera::convertToCameraSpace(Triangle3D& worldTriangle) const
 	return worldTriangle;
 }
 
-std::vector<Triangle3D> Camera::convertToCameraSpace(std::vector<Triangle3D> worldTriangles) const
+std::vector<Triangle3> Camera::convertToCameraSpace(std::vector<Triangle3> worldTriangles) const
 {
 	for (int i = 0; i < worldTriangles.size(); i++)
 	{
@@ -63,9 +63,9 @@ std::vector<Triangle3D> Camera::convertToCameraSpace(std::vector<Triangle3D> wor
 }
 
 //assumes triangles are in camera space
-std::vector<Triangle3D> Camera::backfaceCulling(std::vector<Triangle3D> triangles)const
+std::vector<Triangle3> Camera::backfaceCulling(std::vector<Triangle3> triangles)const
 {
-	std::vector<Triangle3D> temp;
+	std::vector<Triangle3> temp;
 	for (int i = 0; i < triangles.size(); i++)
 	{
 		if (Vector3::dotProduct(triangles[i][0], triangles[i].normal) >= 0)
@@ -76,7 +76,7 @@ std::vector<Triangle3D> Camera::backfaceCulling(std::vector<Triangle3D> triangle
 	return temp;
 }
 
-bool Camera::isTriangleFacingAway(const Triangle3D& triangle) const
+bool Camera::isTriangleFacingAway(const Triangle3& triangle) const
 {
 		if (Vector3::dotProduct(triangle[0], triangle.normal) >= 0)
 		{
@@ -86,9 +86,9 @@ bool Camera::isTriangleFacingAway(const Triangle3D& triangle) const
 }
 
 
-std::vector<Triangle3D> Camera::nearClipping(std::vector<Triangle3D> triangles) const
+std::vector<Triangle3> Camera::nearClipping(std::vector<Triangle3> triangles) const
 {
-	std::vector<Triangle3D> temp;
+	std::vector<Triangle3> temp;
 	for (int i = 0; i < triangles.size(); i++)
 	{
 		for (int k = 0; k < 3; k++)
@@ -104,7 +104,7 @@ std::vector<Triangle3D> Camera::nearClipping(std::vector<Triangle3D> triangles) 
 	return temp;
 }
 
-bool Camera::isTriangleTooNear(const Triangle3D& triangle) const
+bool Camera::isTriangleTooNear(const Triangle3& triangle) const
 {
 		for (int k = 0; k < 3; k++)
 		{
@@ -116,19 +116,19 @@ bool Camera::isTriangleTooNear(const Triangle3D& triangle) const
 		return false;
 }
 
-std::vector<Triangle3D> Camera::triangles3Dto2Dz(std::vector<Triangle3D> triangles) const
+std::vector<Triangle3> Camera::triangles3Dto2Dz(std::vector<Triangle3> triangles) const
 {
-	std::vector<Triangle3D> temp;
+	std::vector<Triangle3> temp;
 	for (int i = 0; i < triangles.size(); i++)
 	{
-		temp.push_back(triangle3Dto2Dz(triangles[i]));
+		temp.push_back(triangle3to2Dz(triangles[i]));
 	}
 	return temp;
 }
 
-std::vector<Triangle3D> Camera::sideClipping(std::vector<Triangle3D> triangles) const
+std::vector<Triangle3> Camera::sideClipping(std::vector<Triangle3> triangles) const
 {
-	std::vector<Triangle3D> temp;
+	std::vector<Triangle3> temp;
 	for (int i = 0; i < triangles.size(); i++)
 	{
 		for (int k = 0; k < 3; k++)
@@ -162,7 +162,7 @@ void Camera::calculateTranspose()
 	transpose = rotation.transpose();
 }
 
-void Camera::clipTriangleToSides2D(Triangle3D triangle, std::vector<Triangle3D>& worldTriangles) const
+void Camera::clipTriangleToSides2D(Triangle3 triangle, std::vector<Triangle3>& worldTriangles) const
 {
 	int dx1 = abs(triangle[0].x - triangle[1].x);
 	int dx2 = abs(triangle[0].x - triangle[2].x);
@@ -187,7 +187,7 @@ void Camera::clipTriangleToSides2D(Triangle3D triangle, std::vector<Triangle3D>&
 	worldTriangles.push_back(triangle);
 }
 
-bool Camera::is2DTriangleOutsideOfScreen(const Triangle3D& triangle) const
+bool Camera::is2DTriangleOutsideOfScreen(const Triangle3& triangle) const
 {
 	int dx1 = abs(triangle[0].x - triangle[1].x);
 	int dx2 = abs(triangle[0].x - triangle[2].x);

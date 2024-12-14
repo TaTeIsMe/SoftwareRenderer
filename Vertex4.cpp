@@ -11,5 +11,5 @@ Vertex4::Vertex4(Vector4 vector4, double u, double v) :Vector4(vector4), u(u), v
 {
 }
 
-Vertex4::Vertex4(Vertex3 vertex3) :Vector4(vertex3), u(vertex3.u), v(vertex3.v)
+Vertex4::Vertex4(const Vertex3& vertex3,double w ) :Vector4(vertex3,w), u(vertex3.u), v(vertex3.v)
 {}

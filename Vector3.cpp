@@ -1,9 +1,10 @@
 #include "Vector3.h"
 #include<iostream>
 #include"Vector2.h"
+#include"Vector4.h"
 #include<cmath>
 
-Vector3& Vector3::operator *=(const double& scalar) {
+Vector3& Vector3::operator *=(double scalar) {
 	x *= scalar;
 	y *= scalar;
 	z *= scalar;
@@ -44,11 +45,11 @@ Vector3& Vector3::operator -=(const Vector3& vector) {
 	return *this;
 };
 
-const Vector3 operator *(const Vector3& lhs, const double& rhs) {
+const Vector3 operator *(const Vector3& lhs, double rhs) {
 	return Vector3(lhs) *= rhs;
 };
 
-const Vector3 operator *(const double& lhs, const Vector3& rhs) {
+const Vector3 operator *(double lhs, const Vector3& rhs) {
 	return Vector3(rhs) *= lhs;
 };
 
@@ -71,7 +72,11 @@ Vector3::Vector3():x(0),y(0),z(0)
 Vector3::Vector3(double x, double y, double z):x(x),y(y),z(z) {
 }
 
-Vector3::Vector3(const Vector2& vector2):x(vector2.x),y(vector2.y),z(0)
+Vector3::Vector3(const Vector2& vector2, double z):x(vector2.x),y(vector2.y),z(z)
+{
+}
+
+Vector3::Vector3(const Vector4& vector4): x(vector4.x), y(vector4.y),z(vector4.z)
 {
 }
 
@@ -80,22 +85,22 @@ double Vector3::length()const
 	return sqrt(x* x+ y* y+ z* z);
 }
 
-double Vector3::distance(Vector3 vec1, Vector3 vec2)
+double Vector3::distance(const Vector3& vec1, const Vector3& vec2)
 {
 	return (vec1 - vec2).length();
 }
 
-Vector3 Vector3::crossProduct(Vector3 vec1, Vector3 vec2)
+Vector3 Vector3::crossProduct(const Vector3& vec1, const Vector3& vec2)
 {
 	return Vector3((vec1.y*vec2.z-vec1.z*vec2.y),-(vec1.x*vec2.z-vec1.z*vec2.x),(vec1.x*vec2.y-vec1.y*vec2.x));
 }
 
-double Vector3::dotProduct(Vector3 vec1, Vector3 vec2)
+double Vector3::dotProduct(const Vector3& vec1, const Vector3& vec2)
 {
 	return vec1.x*vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
 }
 
-Vector3 Vector3::crossProduct(Vector3 vec2) const
+Vector3 Vector3::crossProduct(const Vector3& vec2) const
 {
 	return crossProduct(*this,vec2);
 }

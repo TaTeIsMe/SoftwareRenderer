@@ -66,7 +66,8 @@ Matrix RigidBody::getTranslationMatrix()const
 Matrix RigidBody::getInverse() const
 {
 	Matrix rotationInverse = getRotationMatrix().transpose();
-	Vector4 translationInverse = Vector4(getTranslationMatrix()) * -1;
+	Matrix translationMatrix = getTranslationMatrix();
+	Vector4 translationInverse =  Vector4(-translationMatrix[0][3], -translationMatrix[1][3], -translationMatrix[2][3],0);
 	translationInverse *= rotationInverse;
 	return RigidBody(rotationInverse,translationInverse);
 

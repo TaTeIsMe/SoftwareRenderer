@@ -7,12 +7,12 @@ extern int windowHeight;
 
 WindowHandler::WindowHandler():pitch(windowWidth*4)
 {
-	pixels = new char[windowHeight*windowWidth*4]();
+	pixels = new char[windowHeight*pitch]();
 
 	window = SDL_CreateWindow("SoftwareRenderer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, 0);
 	
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_SOFTWARE);
 	if (renderer == NULL)
 	{
 		printf("Unable to create renderer: %s\n", SDL_GetError());

@@ -32,6 +32,22 @@ Matrix::Matrix(const Matrix& other)
     }
 }
 
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> init)
+{
+    height = init.size();
+    width = init.begin()->size();
+    insides = new double* [height];
+    int i = 0;
+    for (const auto& row : init) {
+        insides[i] = new double[width];
+        int j = 0;
+        for (double value : row) {
+            insides[i][j++] = value;
+        }
+        i++;
+    }
+}
+
 Matrix & Matrix::operator=(Matrix other)
 {
     swap(*this,other);
@@ -127,6 +143,16 @@ void Matrix::comout() const
     std::cout << "\n";
 }
 
+Matrix Matrix::translation4(double x, double y, double z)
+{
+    return {
+        {1,0,0,x},
+        {0,1,0,y},
+        {0,0,1,z},
+        {0,0,0,1}
+    };
+}
+
 Matrix::~Matrix()
 {
     for (int i = 0; i < height; i++)
@@ -171,7 +197,7 @@ Matrix Matrix::zRotation( double angle){
     returnMatrix[2][2] = 1;
     return returnMatrix;
 }
-Matrix Matrix::xRotation4D(double angle)
+Matrix Matrix::xRotation4(double angle)
 {
     Matrix returnMatrix(identityMatrix(4));
     returnMatrix[1][1] = cos(angle);
@@ -182,7 +208,7 @@ Matrix Matrix::xRotation4D(double angle)
 }
 ;
 
-Matrix Matrix::yRotation4D(double angle)
+Matrix Matrix::yRotation4(double angle)
 {
     Matrix returnMatrix(identityMatrix(4));
     returnMatrix[0][0] = cos(angle);
@@ -192,7 +218,7 @@ Matrix Matrix::yRotation4D(double angle)
     return returnMatrix;
 }
 
-Matrix Matrix::zRotation4D(double angle)
+Matrix Matrix::zRotation4(double angle)
 {
     Matrix returnMatrix(identityMatrix(4));
     returnMatrix[0][0] = cos(angle);

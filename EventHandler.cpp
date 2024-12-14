@@ -7,15 +7,9 @@ void EventHandler::handleEvents()
         SDL_GetRelativeMouseState(&mousedX, &mousedY);
         const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
-        if (keystate[SDL_SCANCODE_D])WSAD.x = 1;
-        if (keystate[SDL_SCANCODE_A])WSAD.x = -1;
-        if (keystate[SDL_SCANCODE_SPACE])verticalMove = 1;
-        if (keystate[SDL_SCANCODE_LSHIFT])verticalMove = -1;
-        if (keystate[SDL_SCANCODE_W])WSAD.z = 1;
-        if (keystate[SDL_SCANCODE_S])WSAD.z = -1;
-        if (!keystate[SDL_SCANCODE_SPACE] && !keystate[SDL_SCANCODE_LSHIFT])verticalMove = 0;
-        if (!keystate[SDL_SCANCODE_A] && !keystate[SDL_SCANCODE_D])WSAD.x = 0;
-        if (!keystate[SDL_SCANCODE_W] && !keystate[SDL_SCANCODE_S])WSAD.z = 0;
+        WSAD.x = keystate[SDL_SCANCODE_D] - keystate[SDL_SCANCODE_A];
+        WSAD.z = keystate[SDL_SCANCODE_W] - keystate[SDL_SCANCODE_S];
+        verticalMove = keystate[SDL_SCANCODE_SPACE] - keystate[SDL_SCANCODE_LSHIFT];
 
         while (SDL_PollEvent(&event) > 0)
         {

@@ -5,6 +5,6 @@ struct Triangle2D
 {
 	Vector2 vertices[3];
 	Triangle2D();
-	Triangle2D(const struct Triangle3D&);
+	Triangle2D(const struct Triangle3&);
 	Vector2& operator [](int index);
 };

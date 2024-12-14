@@ -7,26 +7,26 @@ class Camera : public GameObject {
 	Matrix transpose;
 	Vector3 planePos;
 public:
-	Triangle2D triangle3Dto2D(Triangle3D worldTriangle) const;
-	Triangle3D& triangle3Dto2Dz(Triangle3D& worldTriangle) const;
-	Triangle3D& convertToCameraSpace(Triangle3D& worldTriangle)const;
-	std::vector<Triangle3D> convertToCameraSpace(std::vector<Triangle3D> worldTriangles) const;
+	Triangle2D triangle3to2D(Triangle3 worldTriangle) const;
+	Triangle3& triangle3to2Dz(Triangle3& worldTriangle) const;
+	Triangle3& convertToCameraSpace(Triangle3& worldTriangle)const;
+	std::vector<Triangle3> convertToCameraSpace(std::vector<Triangle3> worldTriangles) const;
 
 	//assumes triangles are in camera space
-	std::vector<Triangle3D> backfaceCulling(std::vector<Triangle3D> triangles)const;
-	bool isTriangleFacingAway(const Triangle3D& triangle) const ;
-	std::vector<Triangle3D> nearClipping(std::vector<Triangle3D> triangles)const;
-	bool isTriangleTooNear(const Triangle3D& triangle) const;
+	std::vector<Triangle3> backfaceCulling(std::vector<Triangle3> triangles)const;
+	bool isTriangleFacingAway(const Triangle3& triangle) const ;
+	std::vector<Triangle3> nearClipping(std::vector<Triangle3> triangles)const;
+	bool isTriangleTooNear(const Triangle3& triangle) const;
 	//returned z is original distance from cameraplane
-	std::vector<Triangle3D> triangles3Dto2Dz(std::vector<Triangle3D> triangles)const;
+	std::vector<Triangle3> triangles3Dto2Dz(std::vector<Triangle3> triangles)const;
 	//poor man's frustrum clipping
-	std::vector<Triangle3D> sideClipping(std::vector<Triangle3D> triangles)const;
+	std::vector<Triangle3> sideClipping(std::vector<Triangle3> triangles)const;
 
 	double getPlanez()const;
 	Matrix getTranspose()const;
 	void calculateTranspose();
-	void clipTriangleToSides2D(Triangle3D projectedTriangle,std::vector<Triangle3D>& worldTriangles)const;
-	bool is2DTriangleOutsideOfScreen(const Triangle3D& triangle) const;
+	void clipTriangleToSides2D(Triangle3 projectedTriangle,std::vector<Triangle3>& worldTriangles)const;
+	bool is2DTriangleOutsideOfScreen(const Triangle3& triangle) const;
 	void handleMovement(Vector3 WSAD,int verticalMove, int mouseX, int mouseY,int dT);
 	Camera();
 };

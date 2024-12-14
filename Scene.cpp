@@ -10,7 +10,7 @@ std::vector<Triangle2D> Scene::covertto2D()const {
 	{
 		for (int j = 0; j < objects[i].GetShape().size(); j++)
 		{
-			Triangle2D projected = camera.triangle3Dto2D(
+			Triangle2D projected = camera.triangle3to2D(
 				objects[i].GetShape()[j]
 				* objects[i].getRotation()
 				+ objects[i].getPosition()
@@ -21,14 +21,14 @@ std::vector<Triangle2D> Scene::covertto2D()const {
 	return sceneTriangles2D;
 }
 
-std::vector<Triangle3D> Scene::covertto2Dz()const {
-	std::vector<Triangle3D> sceneTriangles2Dz;
+std::vector<Triangle3> Scene::covertto2Dz()const {
+	std::vector<Triangle3> sceneTriangles2Dz;
 	for (int i = 0; i < objects.size(); i++)
 	{
 		for (int j = 0; j < objects[i].GetShape().size(); j++)
 		{
 			//translate to world space
-			Triangle3D toBeProjected = objects[i].GetShape()[j] * objects[i].getRotation() + objects[i].getPosition();
+			Triangle3 toBeProjected = objects[i].GetShape()[j] * objects[i].getRotation() + objects[i].getPosition();
 			toBeProjected.normal *= objects[i].getRotation();
 			//tocameraspace
 			toBeProjected = camera.convertToCameraSpace(toBeProjected);
@@ -49,7 +49,7 @@ std::vector<Triangle3D> Scene::covertto2Dz()const {
 				};
 			}
 			//cast onto screen
-			toBeProjected = camera.triangle3Dto2Dz(toBeProjected);
+			toBeProjected = camera.triangle3to2Dz(toBeProjected);
 			//frustrum clipping oh god please fix later!!
 			for (int k = 0; k < 3; k++)
 			{
@@ -66,9 +66,9 @@ std::vector<Triangle3D> Scene::covertto2Dz()const {
 	return sceneTriangles2Dz;
 }
 
-std::vector<Triangle3D> Scene::objectsToSceneSpace() const
+std::vector<Triangle3> Scene::objectsToSceneSpace() const
 {
-	std::vector<Triangle3D> temp;
+	std::vector<Triangle3> temp;
 	for (int i = 0; i < objects.size(); i++)
 	{
 		for (int k = 0; k < objects[i].GetShape().size(); k++)

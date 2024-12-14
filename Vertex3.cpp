@@ -1,5 +1,5 @@
 #include "Vertex3.h"
-
+#include "Vertex4.h"
 Vertex3::Vertex3():u(),v(), Vector3()
 {
 }
@@ -12,10 +12,10 @@ Vertex3::Vertex3(double x, double y, double z, double u, double v):Vector3(x,y,z
 {
 }
 
-Vertex3::Vertex3(Vector3 vector3, double u, double v):Vector3(vector3), u(u), v(v)
+Vertex3::Vertex3(const Vector3& vector3, double u, double v):Vector3(vector3), u(u), v(v)
 {
 }
 
-Vertex3::Vertex3(const Vector2& vector2):Vector3(vector2),u(0),v(0)
+Vertex3::Vertex3(const Vertex4& vertex4):Vector3(vertex4),u(vertex4.u),v(vertex4.v)
 {
 }

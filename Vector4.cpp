@@ -1,5 +1,6 @@
 #include "Vector4.h"
 #include "Vector3.h"
+#include "Vector2.h"
 #include<cmath>
 #include<iostream>
 Vector4::Vector4() :x(0),y(0),z(0),w(1)
@@ -10,17 +11,12 @@ Vector4::Vector4(double x, double y, double z, double w ) :x(x), y(y), z(z), w(w
 
 }
 
-Vector4::Vector4(const Vector3& vector3) :x(vector3.x), y(vector3.y),z(vector3.z),w(1)
+Vector4::Vector4(const Vector3& vector3,double w) :x(vector3.x), y(vector3.y),z(vector3.z),w(w)
 {
 }
 
-Vector4::Vector4(const Matrix& matrix)
+Vector4::Vector4(const Vector2& vector2, double z, double w): x(vector2.x), y(vector2.y), z(z), w(w)
 {
-	if(matrix.getWidth() != 4 || matrix.getHeight()!=4)std::cerr << "Can't cast a non 4x4 matrix to a 4D vector";
-	x = matrix[0][3];
-	y = matrix[1][3];
-	z = matrix[2][3];
-	w = 1;
 }
 
 double Vector4::length() const
@@ -28,13 +24,13 @@ double Vector4::length() const
 	return sqrt(x * x + y * y + z * z);
 }
 
-double Vector4::distance(Vector4 vec1, Vector4 vec2)
+double Vector4::distance(const Vector4& vec1,const Vector4& vec2)
 {
 	return (vec1 - vec2).length();
 }
 
 
-double Vector4::dotProduct(Vector4 vec1, Vector4 vec2)
+double Vector4::dotProduct(const Vector4& vec1,const Vector4& vec2)
 {
 	return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
 }
@@ -56,7 +52,7 @@ Vector4& Vector4::operator +=(const Vector4& vector) {
 	return *this;
 };
 
-Vector4& Vector4::operator *=(const double& scalar) {
+Vector4& Vector4::operator *=(double scalar) {
 	x *= scalar;
 	y *= scalar;
 	z *= scalar;
@@ -79,11 +75,11 @@ Vector4& Vector4::operator *=(const Matrix& transformation) {
 	return *this;
 }
 
-const Vector4 operator *(const Vector4& lhs, const double& rhs) {
+const Vector4 operator *(const Vector4& lhs, double rhs) {
 	return Vector4(lhs) *= rhs;
 };
 
-const Vector4 operator *(const double& lhs, const Vector4& rhs) {
+const Vector4 operator *(double lhs, const Vector4& rhs) {
 	return Vector4(rhs) *= lhs;
 };
 
@@ -99,12 +95,12 @@ const Vector4 operator -(const Vector4& lhs, const Vector4& rhs) {
 	return Vector4(lhs) -= rhs;
 };
 
-Vector4 Vector4::crossProduct(Vector4 vec1, Vector4 vec2)
+Vector4 Vector4::crossProduct(const Vector4& vec1,const  Vector4& vec2)
 {
 	return Vector4((vec1.y * vec2.z - vec1.z * vec2.y), -(vec1.x * vec2.z - vec1.z * vec2.x), (vec1.x * vec2.y - vec1.y * vec2.x));
 }
 
-Vector4 Vector4::crossProduct(Vector4 vec2) const
+Vector4 Vector4::crossProduct(const Vector4& vec2) const
 {
 	return crossProduct(*this, vec2);
 }
@@ -112,5 +108,5 @@ Vector4 Vector4::crossProduct(Vector4 vec2) const
 Vector4 Vector4::normalized() const
 {
 	if (length() == 0)return Vector4(this->x, this->y, this->z);
-	return Vector4(x / length(), y / length(), z / length());
+	return Vector4(x / length(), y / length(), z / length(),w/length());
 }

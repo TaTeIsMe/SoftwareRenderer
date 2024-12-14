@@ -1,6 +1,6 @@
 #include "Rasterizer.h"
 #include "Triangle2D.h"
-#include"Triangle3D.h"
+#include"Triangle3.h"
 #include <algorithm>
 #include<iostream>
 #include<mutex>
@@ -110,7 +110,6 @@ void Rasterizer::drawTriangle(Triangle2D triangle) const{
 Uint32 getpixel(SDL_Surface* surface, int x, int y)
 {
     int bpp = surface->format->BytesPerPixel;
-    /* Here p is the address to the pixel we want to retrieve */
     Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
 
     switch (bpp)
@@ -124,10 +123,7 @@ Uint32 getpixel(SDL_Surface* surface, int x, int y)
         break;
 
     case 3:
-        if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            return p[0] << 16 | p[1] << 8 | p[2];
-        else
-            return p[0] | p[1] << 8 | p[2] << 16;
+        return p[0] | p[1] << 8 | p[2] << 16;
         break;
 
     case 4:
@@ -135,12 +131,12 @@ Uint32 getpixel(SDL_Surface* surface, int x, int y)
         break;
 
     default:
-        return 0;       /* shouldn't happen, but avoids warnings */
+        return 0;
     }
 }
 
 struct gradients {
-    gradients(Triangle3D triangle);
+    gradients(Triangle3 triangle);
     float oneOverZ[3];
     float uOverZ[3];
     float vOverZ[3];
@@ -148,7 +144,7 @@ struct gradients {
     float dUOverZdX, dUOverZdY;
     float dVOverZdX, dVOverZdY;
 };
-gradients::gradients(Triangle3D triangle)
+gradients::gradients(Triangle3 triangle)
 {
     float oneOverdX = 1 / (((triangle[1].x - triangle[2].x) *
         (triangle[0].y - triangle[2].y)) -
@@ -227,7 +223,7 @@ LineVars::LineVars(Vertex3 vertex1,Vertex3 vertex2) {
     zprim = 1 / vertex1.z;
 }
 
-void Rasterizer::drawScanline(LineVars line1, LineVars line2, gradients gra, float dxz, Triangle3D triangle) {
+void Rasterizer::drawScanline(LineVars line1, LineVars line2, gradients gra, float dxz, Triangle3 triangle) {
     float scanz = line1.z;
     float scanuprim = line1.uprim;
     float scanvprim = line1.vprim;
@@ -246,7 +242,7 @@ void Rasterizer::drawScanline(LineVars line1, LineVars line2, gradients gra, flo
     }
 };
 
-void Rasterizer::drawTexuredPointZ(int y, int x, float uprim, float vprim, float zprim, float z, Triangle3D triangle, Uint32& data,SDL_Color& color)
+void Rasterizer::drawTexuredPointZ(int y, int x, float uprim, float vprim, float zprim, float z, Triangle3 triangle, Uint32& data,SDL_Color& color)
 {
     unsigned int offset = (windowWidth * (-y + windowHeight / 2.)) + (x + windowWidth/ 2.);
     if (abs(y) < windowHeight / 2. && abs(x) < windowWidth / 2.) {
@@ -264,17 +260,7 @@ void Rasterizer::drawTexuredPointZ(int y, int x, float uprim, float vprim, float
     }
 }
 
-//SDL_Color Rasterizer::getTextureColor(const float& uprim, const float& vprim, const float& zprim, Uint32& data, SDL_Color& color)
-//{
-//    unsigned int u = uprim * triangle.texture->h / zprim;
-//    unsigned int v = vprim * triangle.texture->w / zprim;
-//    data = getpixel(triangle.texture, 1, 1);
-//    if (u < triangle.texture->w && v < triangle.texture->h)
-//        data = getpixel(triangle.texture, u, v);
-//    SDL_GetRGB(data, triangle.texture->format, &color.r, &color.g, &color.b);
-//    return SDL_Color();
-//}
-void Rasterizer::drawTrianglez(Triangle3D& triangle)
+void Rasterizer::drawTrianglez(Triangle3& triangle)
 {
     //sort vertices by ascending Y order
     std::sort(std::begin(triangle.vertices), std::end(triangle.vertices),
@@ -408,7 +394,7 @@ line2:
     if(!isSecond && (line2.dx != 0 || line2.dy != 0))goto line1;
 };
 
-void Rasterizer::drawTrianglezWire(Triangle3D triangle/*, const ZBuffer& zBuffer*/) const
+void Rasterizer::drawTrianglezWire(Triangle3 triangle/*, const ZBuffer& zBuffer*/) const
 {
 
     //sort vertices by ascending Y order
@@ -535,7 +521,7 @@ line2:
     if (!isSecond && (dx2 != 0 || dy2 != 0))goto line1;
 };
 
-void Rasterizer::drawTrianglezBBox(Triangle3D triangle)
+void Rasterizer::drawTrianglezBBox(Triangle3 triangle)
 {}
 void Rasterizer::drawScene(std::vector<Triangle2D> triangles)const{
     for (int i = 0; i < triangles.size(); i++)
@@ -544,24 +530,24 @@ void Rasterizer::drawScene(std::vector<Triangle2D> triangles)const{
     }
 }
 
-void Rasterizer::drawScenez(std::vector<Triangle3D>& triangles) {
+void Rasterizer::drawScenez(std::vector<Triangle3>& triangles) {
     for (int i = 0; i < triangles.size(); i++)
     {
         drawTrianglez(triangles[i]);
     }
 }
 
-void Rasterizer::drawScenezBBox(const std::vector<Triangle3D>& triangles) {
+void Rasterizer::drawScenezBBox(const std::vector<Triangle3>& triangles) {
     for (int i = 0; i < triangles.size(); i++)
     {
         drawTrianglezBBox(triangles[i]);
     }
 }
 
-void Rasterizer::drawScenezWire(const std::vector<Triangle3D>& triangles)const {
+void Rasterizer::drawScenezWire(const std::vector<Triangle3>& triangles)const {
     for (int i = 0; i < triangles.size(); i++)
     {
-        drawTrianglezWire(triangles[i]/*, zBuffer*/);
+        drawTrianglezWire(triangles[i]);
     }
 }
 

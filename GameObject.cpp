@@ -2,13 +2,14 @@
 #include<fstream>
 #include<sstream>
 #include<string>
+#include<algorithm>
 #include "Vertex3.h"
 GameObject::GameObject():rotation(3,3),position(0,0,0) {
 	rotation = Matrix::xRotation(0) * Matrix::yRotation(0) * Matrix::zRotation(0);
 
 }
 
-const std::vector<Triangle3D>& GameObject::GetShape() const {
+const std::vector<Triangle3>& GameObject::GetShape() const {
 	return shape;
 }
 
@@ -160,7 +161,7 @@ GameObject loadGameObject(std::string objectPath, std::string texturePath,double
 		vertex1data = seperateLine(seperatedLine[1], '/');
 		vertex2data = seperateLine(seperatedLine[2], '/');
 		vertex3data = seperateLine(seperatedLine[3], '/');
-		loadedGO.shape.push_back(Triangle3D(
+		loadedGO.shape.push_back(Triangle3(
 			Vertex3(
 				objectVerteces[stoi(vertex1data[0]) - 1],
 				objectuvs[stoi(vertex1data[1]) - 1].u,
@@ -179,6 +180,8 @@ GameObject loadGameObject(std::string objectPath, std::string texturePath,double
 			Vector3(Vector3::crossProduct(objectVerteces[stoi(vertex2data[0]) - 1] - (objectVerteces[stoi(vertex1data[0]) - 1]), (objectVerteces[stoi(vertex3data[0]) - 1]) - (objectVerteces[stoi(vertex1data[0]) - 1]))),
 			texture
 		));
+
+
 		getline(myfile, line);
 		seperatedLine = seperateLine(line, ' ');
 	}

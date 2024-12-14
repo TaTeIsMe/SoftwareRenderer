@@ -2,6 +2,8 @@
 #include"iostream"
 extern double fov;
 extern double aspectRatio;
+extern int windowWidth;
+extern int windowHeight;
 extern double nearPlane;
 extern double farPlane;
 
@@ -159,6 +161,49 @@ void GeometryProcessor::clipToBottomPlane()
 
 void GeometryProcessor::clipToNearPlane()
 {
+	newVertices.clear();
+	//interpolation factor for the line
+	double t = 0;
+	for (int i = 0; i < oldVertices.size(); ++i)
+	{
+		const Vertex4 currentVertex = oldVertices[i];
+		const Vertex4 nextVertex = oldVertices[(i + 1) % oldVertices.size()];
+
+		// Case 1: Current vertex is outside the plane, next is inside
+		if ((currentVertex.z < -currentVertex.w) && (nextVertex.z > -nextVertex.w)) {
+			//calculate the interpolation factor
+			t = (currentVertex.z + currentVertex.w) / ((currentVertex.z + currentVertex.w) - (nextVertex.z + nextVertex.w));
+			//find the intersection with the clipping plane
+			newVertices.push_back(t * nextVertex + ((1 - t) * currentVertex));
+			newVertices.back().v = t * nextVertex.v + ((1 - t) * currentVertex.v);
+			newVertices.back().u = t * nextVertex.u + ((1 - t) * currentVertex.u);
+			newVertices.push_back(nextVertex);
+		}
+
+		// Case 2: Current vertex is inside the plane, next is outside
+		else if ((currentVertex.z > -currentVertex.w) && (nextVertex.z < -nextVertex.w)) {
+			//calculate the interpolation factor
+			t = (currentVertex.z + currentVertex.w) / ((currentVertex.z + currentVertex.w) - (nextVertex.z + nextVertex.w));
+			//find the intersection with the clipping plane
+			newVertices.push_back(t * nextVertex + ((1 - t) * currentVertex));
+			newVertices.back().v = t * nextVertex.v + ((1 - t) * currentVertex.v);
+			newVertices.back().u = t * nextVertex.u + ((1 - t) * currentVertex.u);
+		}
+
+		// Case 3: Both vertices are inside
+		else if ((currentVertex.z > -currentVertex.w) && (nextVertex.z > -nextVertex.w))
+			newVertices.push_back(nextVertex);
+	}
+	oldVertices = newVertices;
+}
+
+GeometryProcessor::GeometryProcessor(): projectionMatrix({
+		{1/tan(fov/2) / aspectRatio,0,0,0},
+		{0,1 / tan(fov / 2),0,0},
+		{0,0,(farPlane + nearPlane) / (double)(farPlane - nearPlane),-2 * farPlane * nearPlane / (double)(farPlane - nearPlane)},
+		{0,0,1,0} }),
+		projectionInverseTranspose(projectionMatrix.inverse().transpose())
+{
 }
 
 Triangle4& GeometryProcessor::convertToCameraSpace(Triangle4& worldTriangle,const Camera4& camera4) const
@@ -169,24 +214,18 @@ Triangle4& GeometryProcessor::convertToCameraSpace(Triangle4& worldTriangle,cons
 		worldTriangle[i] *= camera4.inverse;
 	}
 	worldTriangle.normal *= camera4.inverse;
+	worldTriangle.normal = worldTriangle.normal.normalized();
     return worldTriangle;
 }
 
 Triangle4& GeometryProcessor::convertToClipSpace(Triangle4& cameraTriangle) const
 {
-	double c = 1/tan(fov/2);
-	Matrix projectionMatrix = Matrix(Matrix::identityMatrix(4));
-	projectionMatrix[0][0] = c/aspectRatio;
-	projectionMatrix[1][1] = c;
-	projectionMatrix[2][2] = (farPlane+ nearPlane)/(farPlane-nearPlane);
-	projectionMatrix[3][3] = 0;
-	projectionMatrix[2][3] = -2*farPlane*nearPlane/(farPlane-nearPlane);
-	projectionMatrix[3][2] = 1;
-
 	for (size_t i = 0; i < 3; i++)
 	{
 		cameraTriangle[i] *= projectionMatrix;
 	}
+	cameraTriangle.normal *= projectionInverseTranspose;
+	cameraTriangle.normal = cameraTriangle.normal.normalized();
 	return cameraTriangle;
 }
 
@@ -255,8 +294,11 @@ Triangle4& GeometryProcessor::mapToScreen(Triangle4& triangle) const
 {
 	for (int i = 0; i < 3; i++)
 	{
-		triangle[i] *= 1/triangle[i].w;
-		triangle[i] *= 200;
+		triangle[i].x /= triangle[i].w;
+		triangle[i].y /= triangle[i].w;
+		triangle[i].z /= triangle[i].w;
+		triangle[i].x *= windowWidth;
+		triangle[i].y *= windowHeight;
 	}
 	return triangle;
 }
