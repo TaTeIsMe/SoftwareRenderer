@@ -68,7 +68,7 @@ struct LineVars {
     bool isSteep;
     float pk;
     int i;
-    float w;
+    float z;
 };
 LineVars::LineVars(Vertex4 vertex1, Vertex4 vertex2) {
     begginingPoint = Vector4((int)vertex1.x, (int)vertex1.y, vertex1.z,vertex1.w);
@@ -83,13 +83,13 @@ LineVars::LineVars(Vertex4 vertex1, Vertex4 vertex2) {
     }
     pk = 2 * dy - dx;
     i = 0;
-    w = begginingPoint.w;
+    z = begginingPoint.z;
     uprim = vertex1.u / vertex1.w;
     vprim = vertex1.v / vertex1.w;
     wprim = 1 / vertex1.w;
 }
 
-bool incrementLine(LineVars& line,gradients& gra, float& dyw, float& dxw, SDL_Surface* texture, std::vector<Pixel>& pixels) {
+bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Surface* texture, std::vector<Pixel>& pixels) {
     for (line.i; line.i < line.dx; line.i++)
     {
         if (line.pk < 0) {
@@ -98,33 +98,33 @@ bool incrementLine(LineVars& line,gradients& gra, float& dyw, float& dxw, SDL_Su
                 line.uprim -= gra.duOverWdY;
                 line.vprim -= gra.dvOverWdY;
                 line.wprim -= gra.doneOverWdY;
-                line.w -= dyw;
+                line.z -= dyz;
                 line.pk = line.pk + 2 * line.dy;
-                pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.w, texture));
+                pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
                 line.i++;
                 return true;
             }
             else {
                 line.endingPoint.x - line.begginingPoint.x > 0 ?
-                    (line.drawnPoint.x++, line.w += dxw, line.wprim += gra.doneOverWdX, line.uprim += gra.duOverWdX, line.vprim += gra.dvOverWdX)
+                    (line.drawnPoint.x++, line.z += dxz, line.wprim += gra.doneOverWdX, line.uprim += gra.duOverWdX, line.vprim += gra.dvOverWdX)
                     :
-                    (line.drawnPoint.x--, line.w -= dxw, line.wprim -= gra.doneOverWdX, line.uprim -= gra.duOverWdX, line.vprim -= gra.dvOverWdX);
+                    (line.drawnPoint.x--, line.z -= dxz, line.wprim -= gra.doneOverWdX, line.uprim -= gra.duOverWdX, line.vprim -= gra.dvOverWdX);
                 line.pk = line.pk + 2 * line.dy;
-                pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.w, texture));
+                pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
             }
         }
         else {
             line.endingPoint.x - line.begginingPoint.x > 0 ?
-                (line.drawnPoint.x++, line.w += dxw, line.wprim += gra.doneOverWdX, line.uprim += gra.duOverWdX, line.vprim += gra.dvOverWdX)
+                (line.drawnPoint.x++, line.z += dxz, line.wprim += gra.doneOverWdX, line.uprim += gra.duOverWdX, line.vprim += gra.dvOverWdX)
                 :
-                (line.drawnPoint.x--, line.w -= dxw, line.wprim -= gra.doneOverWdX, line.uprim -= gra.duOverWdX, line.vprim -= gra.dvOverWdX);
+                (line.drawnPoint.x--, line.z -= dxz, line.wprim -= gra.doneOverWdX, line.uprim -= gra.duOverWdX, line.vprim -= gra.dvOverWdX);
             line.drawnPoint.y--;
             line.vprim -= gra.dvOverWdY;
             line.uprim -= gra.duOverWdY;
             line.wprim -= gra.doneOverWdY;
-            line.w -= dyw;
+            line.z -= dyz;
             line.pk = line.pk + 2 * line.dy - 2 * line.dx;
-            pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.w, texture));
+            pixels.push_back(Pixel(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
             line.i++;
             return true;
         };
@@ -132,8 +132,8 @@ bool incrementLine(LineVars& line,gradients& gra, float& dyw, float& dxw, SDL_Su
     return false;
 }
 
-void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& gra, float dxw, SDL_Surface* texture, std::vector<Pixel>& pixels) {
-    float scanw = line1.w;
+void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& gra, float dxz, SDL_Surface* texture, std::vector<Pixel>& pixels) {
+    float scanw = line1.z;
     float scanuprim = line1.uprim;
     float scanvprim = line1.vprim;
     float scanwprim = line1.wprim;
@@ -141,14 +141,14 @@ void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& g
     if (line1.drawnPoint.x < line2.drawnPoint.x) {
         for (int k = line1.drawnPoint.x + 1; k <= (int)line2.drawnPoint.x - 1; k++)
         {
-            scanw += dxw, scanuprim += gra.duOverWdX, scanwprim += gra.doneOverWdX, scanvprim += gra.dvOverWdX;
+            scanw += dxz, scanuprim += gra.duOverWdX, scanwprim += gra.doneOverWdX, scanvprim += gra.dvOverWdX;
             pixels.push_back(Pixel(k, line2.drawnPoint.y, scanuprim, scanvprim, scanwprim, scanw, texture));
         }
     }
     else {
         for (int k = line1.drawnPoint.x - 1; k >= (int)line2.drawnPoint.x+1; k--)
         {
-            scanw -= dxw, scanuprim -= gra.duOverWdX, scanwprim -= gra.doneOverWdX, scanvprim -= gra.dvOverWdX;
+            scanw -= dxz, scanuprim -= gra.duOverWdX, scanwprim -= gra.doneOverWdX, scanvprim -= gra.dvOverWdX;
             pixels.push_back(Pixel(k, line2.drawnPoint.y, scanuprim, scanvprim, scanwprim, scanw, texture));
         }
     }
@@ -165,27 +165,27 @@ std::vector<Pixel> RasterizationProcessor::rasterizeTriangle(Triangle4& triangle
         }
     );
     //find plane equation
-    Vector4 planeNormal = Vector4::crossProduct(triangle[1] - triangle[0], triangle[2] - triangle[0]).normalized();
+    Vector3 planeNormal = Vector3::crossProduct(triangle[1] - triangle[0], triangle[2] - triangle[0]).normalized();
     double A = planeNormal.x;
     double B = planeNormal.y;
     double C = planeNormal.z;
 
-    float dyw = -B / C;
-    float dxw = -A / C;
+    float dyz = -B / C;
+    float dxz = -A / C;
 
     LineVars line1(triangle[2], triangle[0]);
     LineVars line2(triangle[2], triangle[1]);
     gradients gra(triangle);
 
-    while (incrementLine(line2, gra, dyw, dxw,triangle.texture, pixels)) {
-        incrementLine(line1, gra, dyw, dxw,triangle.texture, pixels);
-        drawScanLine(line1,line2, gra, dxw,triangle.texture, pixels);
+    while (incrementLine(line2, gra, dyz, dxz,triangle.texture, pixels)) {
+        incrementLine(line1, gra, dyz, dxz,triangle.texture, pixels);
+        drawScanLine(line1,line2, gra, dxz,triangle.texture, pixels);
     }
     line2 = LineVars(triangle[1], triangle[0]);
 
-    while (incrementLine(line2, gra, dyw, dxw,triangle.texture, pixels)) {
-        incrementLine(line1, gra, dyw, dxw,triangle.texture, pixels);
-        drawScanLine(line1,line2, gra, dxw,triangle.texture, pixels);
+    while (incrementLine(line2, gra, dyz, dxz,triangle.texture, pixels)) {
+        incrementLine(line1, gra, dyz, dxz,triangle.texture, pixels);
+        drawScanLine(line1,line2, gra, dxz,triangle.texture, pixels);
     }
 
 	return pixels;

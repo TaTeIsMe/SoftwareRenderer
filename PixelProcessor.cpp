@@ -41,7 +41,7 @@ void PixelProcessor::drawPixels(const std::vector<Pixel>& pixels)
 		const Pixel& pixel = pixels[i];
 		if (abs(pixel.y) < windowHeight / 2. && abs(pixel.x) < windowWidth / 2.) {
 			unsigned int offset = (windowWidth * (-pixel.y + windowHeight / 2.)) + (pixel.x + windowWidth / 2.);
-			if (pixel.w < zbuffer[offset])
+			if (pixel.z < zbuffer[offset])
 			{
 				unsigned int u = pixel.uprim * pixel.texture->h / pixel.wprim;
 				unsigned int v = pixel.vprim * pixel.texture->w / pixel.wprim;
@@ -51,7 +51,7 @@ void PixelProcessor::drawPixels(const std::vector<Pixel>& pixels)
 				else
 					data = getpixel(pixel.texture, 1, 1);
 				SDL_GetRGB(data, pixel.texture->format, &color.r, &color.g, &color.b);
-				zbuffer[offset] = pixel.w;
+				zbuffer[offset] = pixel.z;
 				windowHandler.drawPoint(Vector2(pixel.x, pixel.y), color.r, color.g, color.b, 0xFF);
 			}
 		}

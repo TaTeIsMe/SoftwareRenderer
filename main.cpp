@@ -45,16 +45,16 @@ int main() {
 	timerHandler.addTimers(6);
 
 	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp",100));
-	//scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 60));
-	//scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 130));
-	//scene1.objects[0].rotate(Matrix::xRotation(3*M_PI/2));
-	//scene1.objects[0].setPosition(Vector3(100,200,123));
-	//scene1.objects[1].rotate(Matrix::xRotation(3 * M_PI / 2));
-	//scene1.objects[1].rotate(Matrix::zRotation(1.5 * M_PI / 2));
-	//scene1.objects[1].setPosition(Vector3(170, 200, 125));
-	//scene1.objects[2].rotate(Matrix::xRotation(3 * M_PI / 2));
-	//scene1.objects[2].rotate(Matrix::yRotation(2 * M_PI / 2));
-	//scene1.objects[2].setPosition(Vector3(10, 200, 120));
+	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 60));
+	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 130));
+	scene1.objects[0].rotate(Matrix::xRotation(3*M_PI/2));
+	scene1.objects[0].setPosition(Vector3(100,200,123));
+	scene1.objects[1].rotate(Matrix::xRotation(3 * M_PI / 2));
+	scene1.objects[1].rotate(Matrix::zRotation(1.5 * M_PI / 2));
+	scene1.objects[1].setPosition(Vector3(170, 200, 125));
+	scene1.objects[2].rotate(Matrix::xRotation(3 * M_PI / 2));
+	scene1.objects[2].rotate(Matrix::yRotation(2 * M_PI / 2));
+	scene1.objects[2].setPosition(Vector3(10, 200, 120));
 
 	Triangle3 testTriangle = Triangle3(Vertex3(0,0,0,0.5,0.5),Vertex3(300,0,0,0.75,0.5),Vertex3(0,300,0,0.5,0.75),Vector3(0,0,-1),scene1.objects[0].GetShape()[0].texture);
 	Triangle3 testTriangle2 = testTriangle;
@@ -90,9 +90,7 @@ int main() {
 		int totaltime5 = 0;
 		int totaltime6 = 0;
 
-		vector<Triangle3> triangles;
-		triangles.push_back(testTriangle);
-		triangles.push_back(testTriangle2);
+		vector<Triangle3> triangles = scene1.objectsToSceneSpace();
 
 		//the graphics pipeline
 		Camera4 camera4 = Camera4(scene1.camera);
@@ -160,14 +158,14 @@ int main() {
 		}*/
 
 
-		//cout << "trianglecount: " << j << "\n";
-		//cout << "stage 0: " << totaltime0 << "\n";
-		//cout << "stage 1: " << totaltime1 << "\n";
-		//cout << "stage 2: " << totaltime2 << "\n";
-		//cout << "stage 3: " << totaltime3 << "\n";
-		//cout << "stage 4: " << totaltime4 << "\n";
-		//cout << "stage 5: " << totaltime5 << "\n";
-		//cout << "stage 6: " << totaltime6 << "\n";
+		cout << "trianglecount: " << j << "\n";
+		cout << "stage 0: " << totaltime0 << "\n";
+		cout << "stage 1: " << totaltime1 << "\n";
+		cout << "stage 2: " << totaltime2 << "\n";
+		cout << "stage 3: " << totaltime3 << "\n";
+		cout << "stage 4: " << totaltime4 << "\n";
+		cout << "stage 5: " << totaltime5 << "\n";
+		cout << "stage 6: " << totaltime6 << "\n";
 
 		windowHandler.unlockScreenTexture();
 		windowHandler.updateScreen();

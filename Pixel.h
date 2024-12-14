@@ -7,8 +7,8 @@ struct Pixel
 	float uprim;
 	float vprim;
 	float wprim;
-	float w;
+	float z;
 	SDL_Surface* texture;
-	Pixel(int x, int y, float uprim, float vprim, float wprim, float w, SDL_Surface* texture);
+	Pixel(int x, int y, float uprim, float vprim, float wprim, float z, SDL_Surface* texture);
 };
 
