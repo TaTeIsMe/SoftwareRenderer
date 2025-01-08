@@ -17,7 +17,7 @@
 int windowHeight = 480;
 int windowWidth = 680;
 double cameraPlaneDistance = 200;
-double nearPlane = 200;
+double nearPlane = 50;
 double farPlane = 49999;
 double movementSpeed = 1;
 double fov = 1.5708;
@@ -46,15 +46,14 @@ int main() {
 
 	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp",100));
 	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 60));
-	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 130));
-	scene1.objects[0].rotate(Matrix::xRotation(3*M_PI/2));
-	scene1.objects[0].setPosition(Vector3(100,200,123));
-	scene1.objects[1].rotate(Matrix::xRotation(3 * M_PI / 2));
-	scene1.objects[1].rotate(Matrix::zRotation(1.5 * M_PI / 2));
+	scene1.objects[0].rotate(
+		Matrix::xRotation(3*M_PI/2)
+	);
+	scene1.objects[1].rotate(
+		Matrix::zRotation(1.5 * M_PI / 2) * 
+		Matrix::xRotation(3 * M_PI / 2)
+	);
 	scene1.objects[1].setPosition(Vector3(170, 200, 125));
-	scene1.objects[2].rotate(Matrix::xRotation(3 * M_PI / 2));
-	scene1.objects[2].rotate(Matrix::yRotation(2 * M_PI / 2));
-	scene1.objects[2].setPosition(Vector3(10, 200, 120));
 
 	scene1.camera.setPosition(Vector3(0,160,0));
 	SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -91,46 +90,20 @@ int main() {
 		int j = 0;
 		for (int i = 0; i < triangles.size(); i++)
 		{
-			
 			handledTriangle = Triangle4(triangles[i]);
-
-			timerHandler.startTimer(0);
 			geometryProcessor.convertToCameraSpace(handledTriangle,camera4);
-			totaltime0 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
 			if(geometryProcessor.isTriangleFacingAway(handledTriangle))continue;
-			totaltime1 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
 			geometryProcessor.convertToClipSpace(handledTriangle);
-			totaltime2 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
 			if(geometryProcessor.isTriangleOutsideOfFrustrum(handledTriangle))continue;
-			totaltime3 += timerHandler.getTimePassed(0).count();
-			timerHandler.startTimer(0);
 			geometryProcessor.clipTriangle(clippedTriangles,handledTriangle);
-			totaltime4 += timerHandler.getTimePassed(0).count();
 			for (int i = 0; i < clippedTriangles.size(); i++)
 			{
 				handledTriangle = clippedTriangles[i];
-				geometryProcessor.mapToScreen(handledTriangle);
-				timerHandler.startTimer(0);
+				geometryProcessor.convertToScreenSpace(handledTriangle);
 				rasterizationProcessor.rasterizeTriangle(handledTriangle,fragments);
-				totaltime5 += timerHandler.getTimePassed(0).count();
-				timerHandler.startTimer(0);
 				fragmentProcessor.drawFragments(fragments);
-				totaltime6 += timerHandler.getTimePassed(0).count();
-				j++;
 			}
 		}
-
-		//cout << "trianglecount: " << j << "\n";
-		//cout << "stage 0: " << totaltime0 << "\n";
-		//cout << "stage 1: " << totaltime1 << "\n";
-		//cout << "stage 2: " << totaltime2 << "\n";
-		//cout << "stage 3: " << totaltime3 << "\n";
-		//cout << "stage 4: " << totaltime4 << "\n";
-		//cout << "stage 5: " << totaltime5 << "\n";
-		//cout << "stage 6: " << totaltime6 << "\n";
 
 		windowHandler.unlockScreenTexture();
 		windowHandler.updateScreen();

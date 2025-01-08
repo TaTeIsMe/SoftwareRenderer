@@ -290,15 +290,15 @@ bool GeometryProcessor::isTriangleOutsideOfFrustrum(const Triangle4& triangle) c
 	
 }
 
-Triangle4& GeometryProcessor::mapToScreen(Triangle4& triangle) const
+Triangle4& GeometryProcessor::convertToScreenSpace(Triangle4& triangle) const
 {
 	for (int i = 0; i < 3; i++)
 	{
 		triangle[i].x /= triangle[i].w;
 		triangle[i].y /= triangle[i].w;
 		triangle[i].z /= triangle[i].w;
-		triangle[i].x *= windowWidth;
-		triangle[i].y *= windowHeight;
+		triangle[i].x *= windowWidth/2;
+		triangle[i].y *= windowHeight/2;
 	}
 	return triangle;
 }

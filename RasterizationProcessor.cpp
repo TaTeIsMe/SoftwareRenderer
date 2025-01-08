@@ -13,10 +13,9 @@ struct gradients {
 };
 gradients::gradients(Triangle4 triangle)
 {
-    float oneOverdX = 1 / (((triangle[1].x - triangle[2].x) *
-        (triangle[0].y - triangle[2].y)) -
-        ((triangle[0].x - triangle[2].x) *
-            (triangle[1].y - triangle[2].y)));
+    float oneOverdX = 1 / (((triangle[1].x - triangle[2].x) * (triangle[0].y - triangle[2].y)) -
+        ((triangle[0].x - triangle[2].x) * (triangle[1].y - triangle[2].y)));
+
     float oneOverdY = -oneOverdX;
 
     for (int i = 0; i < 3; i++)
@@ -26,32 +25,23 @@ gradients::gradients(Triangle4 triangle)
         vOverW[i] = triangle[i].v * oneOverW[i];
     }
 
-    doneOverWdX = oneOverdX * (((oneOverW[1] - oneOverW[2]) *
-        (triangle[0].y - triangle[2].y)) -
-        ((oneOverW[0] - oneOverW[2]) *
-            (triangle[1].y - triangle[2].y)));
-    doneOverWdY = oneOverdY * (((oneOverW[1] - oneOverW[2]) *
-        (triangle[0].x - triangle[2].x)) -
-        ((oneOverW[0] - oneOverW[2]) *
-            (triangle[1].x - triangle[2].x)));
+    doneOverWdX = oneOverdX * (((oneOverW[1] - oneOverW[2]) * (triangle[0].y - triangle[2].y)) -
+        ((oneOverW[0] - oneOverW[2]) * (triangle[1].y - triangle[2].y)));
 
-    duOverWdX = oneOverdX * (((uOverW[1] - uOverW[2]) *
-        (triangle[0].y - triangle[2].y)) -
-        ((uOverW[0] - uOverW[2]) *
-            (triangle[1].y - triangle[2].y)));
-    duOverWdY = oneOverdY * (((uOverW[1] - uOverW[2]) *
-        (triangle[0].x - triangle[2].x)) -
-        ((uOverW[0] - uOverW[2]) *
-            (triangle[1].x - triangle[2].x)));
+    doneOverWdY = oneOverdY * (((oneOverW[1] - oneOverW[2]) * (triangle[0].x - triangle[2].x)) -
+        ((oneOverW[0] - oneOverW[2]) * (triangle[1].x - triangle[2].x)));
 
-    dvOverWdX = oneOverdX * (((vOverW[1] - vOverW[2]) *
-        (triangle[0].y - triangle[2].y)) -
-        ((vOverW[0] - vOverW[2]) *
-            (triangle[1].y - triangle[2].y)));
-    dvOverWdY = oneOverdY * (((vOverW[1] - vOverW[2]) *
-        (triangle[0].x - triangle[2].x)) -
-        ((vOverW[0] - vOverW[2]) *
-            (triangle[1].x - triangle[2].x)));
+    duOverWdX = oneOverdX * (((uOverW[1] - uOverW[2]) * (triangle[0].y - triangle[2].y)) -
+        ((uOverW[0] - uOverW[2]) * (triangle[1].y - triangle[2].y)));
+
+    duOverWdY = oneOverdY * (((uOverW[1] - uOverW[2]) * (triangle[0].x - triangle[2].x)) -
+        ((uOverW[0] - uOverW[2]) * (triangle[1].x - triangle[2].x)));
+
+    dvOverWdX = oneOverdX * (((vOverW[1] - vOverW[2]) * (triangle[0].y - triangle[2].y)) -
+        ((vOverW[0] - vOverW[2]) * (triangle[1].y - triangle[2].y)));
+
+    dvOverWdY = oneOverdY * (((vOverW[1] - vOverW[2]) * (triangle[0].x - triangle[2].x)) -
+        ((vOverW[0] - vOverW[2]) * (triangle[1].x - triangle[2].x)));
 
 }
 
@@ -89,7 +79,7 @@ LineVars::LineVars(Vertex4 vertex1, Vertex4 vertex2) {
     wprim = 1 / vertex1.w;
 }
 
-bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Surface* texture, std::vector<Fragment>& fragments) {
+bool RasterizationProcessor::incrementLine(LineVars& line,const gradients& gra, float dyz, float dxz, SDL_Surface* texture, std::vector<Fragment>& fragments) {
     for (line.i; line.i < line.dx; line.i++)
     {
         if (line.pk < 0) {
@@ -132,7 +122,7 @@ bool incrementLine(LineVars& line,gradients& gra, float& dyz, float& dxz, SDL_Su
     return false;
 }
 
-void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& gra, float dxz, SDL_Surface* texture, std::vector<Fragment>& fragments) {
+void RasterizationProcessor::drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& gra, float dxz, SDL_Surface* texture, std::vector<Fragment>& fragments) {
     float scanw = line1.z;
     float scanuprim = line1.uprim;
     float scanvprim = line1.vprim;
@@ -154,7 +144,8 @@ void drawScanLine(const LineVars& line1,const LineVars& line2,const gradients& g
     }
 };
 
-std::vector<Fragment> RasterizationProcessor::rasterizeTriangle(Triangle4& triangle, std::vector<Fragment>& fragments)
+//this function is slow due to the sheer amount of Fragment structs it needs to create. Add object pooling or smth to fix
+std::vector<Fragment>& RasterizationProcessor::rasterizeTriangle(Triangle4& triangle, std::vector<Fragment>& fragments)
 {
     fragments.clear();
 
