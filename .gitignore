@@ -42,6 +42,3 @@
 *.ilk
 *.idb
 *.pdb
-x64/Debug/geometryprocessor.obj.enc
-*.ipdb
-*.iobj
