@@ -42,7 +42,7 @@ extern int windowWidth;
 //    //std::cout << dx<<"\n";
 //}
 
-void Rasterizer::drawLine(Vector2 begginingPoint, Vector2 endingPoint) const {
+void Rasterizer::drawLine(Vector2 begginingPoint, Vector2 endingPoint, Uint8 r, Uint8 g, Uint8 b) const {
     //Bresenham's algorythm
     Vector2 drawnPoint = begginingPoint;
     int dx = abs(endingPoint.x - begginingPoint.x);
@@ -53,7 +53,7 @@ void Rasterizer::drawLine(Vector2 begginingPoint, Vector2 endingPoint) const {
         isSteep = false;
     }
     int pk = 2 * dy - dx;
-    windowHandler.drawPoint(drawnPoint, 0xFF, 0x00, 0x00, 0xFF);
+    windowHandler.drawPoint(drawnPoint, r, g, b, 0xFF);
 
     for (int i = 0; i < dx - 1; i++)
     {
@@ -61,19 +61,19 @@ void Rasterizer::drawLine(Vector2 begginingPoint, Vector2 endingPoint) const {
             if (isSteep) {
                 endingPoint.y - begginingPoint.y > 0 ? drawnPoint.y++ : drawnPoint.y--;
                 pk = pk + 2 * dy;
-                windowHandler.drawPoint(drawnPoint, 0xFF, 0x00, 0x00, 0xFF);
+                windowHandler.drawPoint(drawnPoint, r, g, b, 0xFF);
             }
             else {
                 endingPoint.x - begginingPoint.x > 0 ? drawnPoint.x++ : drawnPoint.x--;
                 pk = pk + 2 * dy;
-                windowHandler.drawPoint(drawnPoint, 0xFF, 0x00, 0x00, 0xFF);
+                windowHandler.drawPoint(drawnPoint, r, g, b, 0xFF);
             }
         }
         else {
             endingPoint.x - begginingPoint.x > 0 ? drawnPoint.x++ : drawnPoint.x--;
             endingPoint.y - begginingPoint.y > 0 ? drawnPoint.y++ : drawnPoint.y--;
             pk = pk + 2 * dy - 2 * dx;
-            windowHandler.drawPoint(drawnPoint, 0xFF, 0x00, 0x00, 0xFF);
+            windowHandler.drawPoint(drawnPoint, r, g, b, 0xFF);
         };
     }
     //std::cout << dx<<"\n";
@@ -101,10 +101,10 @@ void Rasterizer::cleanzbuffer()
     }
 }
 
-void Rasterizer::drawTriangle(Triangle2D triangle) const{
-    drawLine(triangle[0], triangle[1]);
-    drawLine(triangle[1], triangle[2]);
-    drawLine(triangle[2], triangle[0]);
+void Rasterizer::drawTriangle(Triangle2D triangle,Uint8 r, Uint8 g, Uint8 b) const{
+    drawLine(triangle[0], triangle[1],  r,g,b);
+    drawLine(triangle[1], triangle[2], r, g, b);
+    drawLine(triangle[2], triangle[0] , r, g, b);
 }
 
 Uint32 getpixel(SDL_Surface* surface, int x, int y)
@@ -526,7 +526,7 @@ void Rasterizer::drawTrianglezBBox(Triangle3 triangle)
 void Rasterizer::drawScene(std::vector<Triangle2D> triangles)const{
     for (int i = 0; i < triangles.size(); i++)
     {
-        drawTriangle(triangles[i]);
+        drawTriangle(triangles[i], 0xFF,0x00,0x00);
     }
 }
 

@@ -20,6 +20,7 @@ public:
 	Triangle4& convertToClipSpace(Triangle4& cameraTriangle)const;
 	std::vector<Triangle4>& clipTriangle(std::vector<Triangle4>& outputVector, Triangle4& clipTriangle);
 	Triangle4& convertToScreenSpace(Triangle4& triangle)const;
+	bool isTriangleInFrontOfFrustrum(const Triangle4& triangle) const;
     bool isTriangleFacingAway(const Triangle4& triangle) const;
 	bool isTriangleOutsideOfFrustrum(const Triangle4& triangle)const;
 	bool isTriangleEntirelyInsideFrustrum(const Triangle4& triangle)const;

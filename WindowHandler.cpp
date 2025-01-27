@@ -39,7 +39,7 @@ void WindowHandler::lockScreenTexture()
 {
 	if(SDL_LockTexture(frameBuffer,NULL,reinterpret_cast<void**>(&pixels), &pitch)!= 0)
 	{
-		//printf("Unable to lock texture! %s\n", SDL_GetError());
+		printf("Unable to lock texture! %s\n", SDL_GetError());
 	}
 }
 
@@ -57,7 +57,7 @@ void WindowHandler::clearScreen() const {
 	SDL_RenderClear(renderer);
 };
 
-void WindowHandler::drawPoint(Vector2 point, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const {
+void WindowHandler::drawPoint(const Vector2& point, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const {
 	unsigned int offset = (windowWidth * (-point.y+windowHeight/2) * 4) + (point.x+windowWidth/2) * 4;
 	if (abs(-point.y) < windowHeight/2  && abs(point.x) < windowWidth / 2) {
 		pixels[offset + 0] = a;

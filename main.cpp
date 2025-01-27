@@ -18,7 +18,7 @@ int windowHeight = 480;
 int windowWidth = 680;
 double cameraPlaneDistance = 200;
 double nearPlane = 50;
-double farPlane = 49999;
+double farPlane = 499999;
 double movementSpeed = 1;
 double fov = 1.5708;
 double aspectRatio = windowWidth/(double)windowHeight;
@@ -44,66 +44,74 @@ int main() {
 	DeltaTime dT;
 	timerHandler.addTimers(6);
 
-	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp",100));
-	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 60));
-	scene1.objects[0].rotate(
-		Matrix::xRotation(3*M_PI/2)
-	);
-	scene1.objects[1].rotate(
-		Matrix::zRotation(1.5 * M_PI / 2) * 
-		Matrix::xRotation(3 * M_PI / 2)
-	);
-	scene1.objects[1].setPosition(Vector3(170, 200, 125));
+	scene1.objects.push_back(loadGameObject("objects/floor.obj", "objects/missingtexture.bmp", 50));
+	//scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/missingtexture.bmp",50));
+	//scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/missingtexture.bmp", 50));
+	//scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/missingtexture.bmp", 50));
+	//scene1.objects[0].setPosition(Vector3(0,-50,0));
+	//scene1.objects[1].setPosition(Vector3(0,100,0));
+	//scene1.objects[2].setPosition(Vector3(120, 0, 0));
+	//scene1.objects[2].setRotation(Matrix::yRotation(0.3));
+	//scene1.camera.setPosition(Vector3(153,377,-384));
 
-	scene1.camera.setPosition(Vector3(0,160,0));
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	for (int j = 0; j < 10; j++)
+	//	{
+	//		for (int k = 0; k < 10; k++)
+	//		{
+	//			scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/missingtexture.bmp", 50));
+	//			scene1.objects[i*100+j*10+k].setPosition(Vector3(i*300,j*300,k*300));
+	//		}
+	//	}
+	//}
+	//scene1.camera.setPosition(Vector3(400,200,-300));
+
+	Triangle4 demoTriangle = Triangle4(Triangle3(Vertex3(0,0,0), Vertex3(100,0,0), Vertex3(0,100,0), Vector3(0,0,-1),scene1.objects[0].GetShape()[0].texture));
+	Triangle4 demoTriangle2 = demoTriangle.transformed(Matrix::xRotation4(M_PI / 2.5) * Matrix::zRotation4(M_PI/2));
+
 	SDL_SetRelativeMouseMode(SDL_TRUE);
-
 	while (eventHandler.getIsRunning())
 	{
-		eventHandler.handleEvents();
-		scene1.camera.handleMovement(eventHandler.getWSAD(),eventHandler.getVerticalMove(), eventHandler.getMousedX(), eventHandler.getMousedY(), dT.getdT());
+		scene1.camera.handleMovement(eventHandler.getWSAD(), eventHandler.getVerticalMove(), eventHandler.getMousedX(), eventHandler.getMousedY(), 1);
 		scene1.camera.calculateTranspose();
-		//scene1.objects[0].rotate(Matrix::yRotation(0.1));
+		eventHandler.handleEvents();
 
 		dT.start();
 		windowHandler.clearScreen();
 		rasterizer.cleanzbuffer();
 		fragmentProcessor.cleanZBuffer();
 		windowHandler.lockScreenTexture();
-		
-		int totaltime0 = 0;
-		int totaltime1 = 0;
-		int totaltime2 = 0;
-		int totaltime3 = 0;
-		int totaltime4 = 0;
-		int totaltime5 = 0;
-		int totaltime6 = 0;
-
-		vector<Triangle3> triangles = scene1.objectsToSceneSpace();
 
 		//the graphics pipeline
-		Camera4 camera4 = Camera4(scene1.camera);
-		vector<Triangle4> clippedTriangles;
+
 		vector<Fragment> fragments;
-		Triangle4 handledTriangle;
+		vector<Triangle4> triangles;
+		triangles.push_back(demoTriangle);
+		triangles.push_back(demoTriangle2);
+		vector<Triangle4> clippedTriangles;
+		Camera4 camera4 = Camera4(scene1.camera);
 		camera4.calculateInverse();
-		int j = 0;
+		Triangle4 handledTriangle;
 		for (int i = 0; i < triangles.size(); i++)
 		{
 			handledTriangle = Triangle4(triangles[i]);
-			geometryProcessor.convertToCameraSpace(handledTriangle,camera4);
-			if(geometryProcessor.isTriangleFacingAway(handledTriangle))continue;
+			geometryProcessor.convertToCameraSpace(handledTriangle, camera4);
+			if (geometryProcessor.isTriangleFacingAway(handledTriangle))continue;
 			geometryProcessor.convertToClipSpace(handledTriangle);
-			if(geometryProcessor.isTriangleOutsideOfFrustrum(handledTriangle))continue;
-			geometryProcessor.clipTriangle(clippedTriangles,handledTriangle);
-			for (int i = 0; i < clippedTriangles.size(); i++)
+			if (geometryProcessor.isTriangleOutsideOfFrustrum(handledTriangle))continue;
+			geometryProcessor.clipTriangle(clippedTriangles, handledTriangle);
+			for (int j = 0; j < clippedTriangles.size(); j++)
 			{
-				handledTriangle = clippedTriangles[i];
+				handledTriangle = clippedTriangles[j];
 				geometryProcessor.convertToScreenSpace(handledTriangle);
-				rasterizationProcessor.rasterizeTriangle(handledTriangle,fragments);
-				fragmentProcessor.drawFragments(fragments);
+				rasterizationProcessor.rasterizeTriangle(handledTriangle, fragments);
+				//fragmentProcessor.drawFragments(fragments);
+				if(i)rasterizer.drawTriangle(Triangle2D(Triangle3(handledTriangle)),0xFF,0x00,0x00);
+				else rasterizer.drawTriangle(Triangle2D(Triangle3(handledTriangle)), 0x00, 0x00, 0xFF);
 			}
 		}
+		
 
 		windowHandler.unlockScreenTexture();
 		windowHandler.updateScreen();

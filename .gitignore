@@ -43,3 +43,5 @@
 *.idb
 *.pdb
 x64/Debug/geometryprocessor.obj.enc
+x64/Release/SoftwareRenderer.ipdb
+x64/Release/SoftwareRenderer.iobj

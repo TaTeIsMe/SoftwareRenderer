@@ -234,7 +234,7 @@ Triangle4& GeometryProcessor::convertToClipSpace(Triangle4& cameraTriangle) cons
 std::vector<Triangle4>& GeometryProcessor::clipTriangle(std::vector<Triangle4>& outputVector, Triangle4& clipTriangle)
 {
 	outputVector.clear();
-	if (isTriangleEntirelyInsideFrustrum(clipTriangle)) { outputVector.push_back(clipTriangle); return outputVector; }
+	//if (isTriangleEntirelyInsideFrustrum(clipTriangle)) { outputVector.push_back(clipTriangle); return outputVector; }
 	newVertices.clear();
 	oldVertices.clear();
 	oldVertices = std::vector<Vertex4> (std::begin(clipTriangle.vertices),std::end(clipTriangle.vertices));
@@ -246,7 +246,7 @@ std::vector<Triangle4>& GeometryProcessor::clipTriangle(std::vector<Triangle4>& 
 	clipToNearPlane();
 	
 	//turn points into triangles
-	if (!newVertices.empty()) {
+	if (newVertices.size()>2) {
 		for (int i = 0; i < newVertices.size() - 2; i++)
 		{
 			outputVector.push_back(Triangle4(newVertices[0], newVertices[i + 1], newVertices[i + 2], clipTriangle.normal, clipTriangle.texture));
@@ -301,6 +301,15 @@ Triangle4& GeometryProcessor::convertToScreenSpace(Triangle4& triangle) const
 		triangle[i].y *= windowHeight/2;
 	}
 	return triangle;
+}
+
+bool GeometryProcessor::isTriangleInFrontOfFrustrum(const Triangle4& triangle) const
+{
+	if (
+		//any vertex is outside the near plane
+		(triangle[0].z < -triangle[0].w || triangle[1].z < -triangle[1].w || triangle[2].z < -triangle[2].w)
+		)return true;
+	return false;
 }
 
 bool GeometryProcessor::isTriangleFacingAway(const Triangle4& triangle) const

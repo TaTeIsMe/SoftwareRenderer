@@ -25,6 +25,7 @@ void TimerHandler::addTimers(int amount)
 {
 	for (int i = 0; i < amount; i++)
 	{
+		times.push_back(0);
 		timers.push_back(std::chrono::steady_clock::now());
 	}
 }
@@ -34,9 +35,15 @@ void TimerHandler::startTimer(int index)
 	timers[index] = std::chrono::steady_clock::now();
 }
 
-void TimerHandler::printTimer(int index, string messege, std::ostream& os) const
+void TimerHandler::endTimer(int index)
 {
-	os << messege<< " " << std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - timers[index]).count() << "\n";
+	times[index] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - timers[index]).count();
+}
+
+void TimerHandler::printTimer(int index, string messege, std::ostream& os)
+{
+	os << messege<< " " << times[index] << "\n";
+	times[index] = 0;
 }
 
 std::chrono::nanoseconds TimerHandler::getTimePassed(int index) const

@@ -16,7 +16,7 @@ public:
 	~WindowHandler();
 	void lockScreenTexture();
 	void unlockScreenTexture();
-	void drawPoint(Vector2 point, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
+	void drawPoint(const Vector2& point, Uint8 r, Uint8 g, Uint8 b, Uint8 a) const;
 	void clearScreen() const;
 	void updateScreen() const;
 };

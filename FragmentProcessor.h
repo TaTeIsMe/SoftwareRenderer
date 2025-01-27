@@ -10,6 +10,7 @@ private:
 	Uint32 getpixel(SDL_Surface* surface, int x, int y);
 public:
 	void drawFragments(const std::vector<Fragment>& fragments);
+	void drawFragmentsNoZBuffer(const std::vector<Fragment>& fragments);
 	void cleanZBuffer();
 	FragmentProcessor(WindowHandler& windowHandler);
 	~FragmentProcessor();

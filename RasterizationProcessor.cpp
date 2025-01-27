@@ -80,7 +80,7 @@ LineVars::LineVars(Vertex4 vertex1, Vertex4 vertex2) {
 }
 
 bool RasterizationProcessor::incrementLine(LineVars& line,const gradients& gra, float dyz, float dxz, SDL_Surface* texture, std::vector<Fragment>& fragments) {
-    for (line.i; line.i < line.dx; line.i++)
+    while( line.i < line.dx)
     {
         if (line.pk < 0) {
             if (line.isSteep) {
@@ -101,6 +101,7 @@ bool RasterizationProcessor::incrementLine(LineVars& line,const gradients& gra, 
                     (line.drawnPoint.x--, line.z -= dxz, line.wprim -= gra.doneOverWdX, line.uprim -= gra.duOverWdX, line.vprim -= gra.dvOverWdX);
                 line.pk = line.pk + 2 * line.dy;
                 fragments.push_back(Fragment(line.drawnPoint.x, line.drawnPoint.y, line.uprim, line.vprim, line.wprim, line.z, texture));
+                line.i++;
             }
         }
         else {
