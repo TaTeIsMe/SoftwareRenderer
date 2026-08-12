@@ -1,5 +1,6 @@
 #include "TimerHandler.h"
 #include <iomanip>
+
 void TimerHandler::printFrameRate(std::ostream& os, float period)
 {
 	static unsigned int frames = 0;

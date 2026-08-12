@@ -2,7 +2,7 @@
 #include"Vector3.h"
 #include"Vertex3.h"
 #include"Triangle4.h"
-#include<SDL.h>
+#include <SDL2/SDL.h>
 struct Triangle3 {
 	Vertex3 vertices[3];
 	Vector3 normal;

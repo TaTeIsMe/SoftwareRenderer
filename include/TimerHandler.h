@@ -2,11 +2,12 @@
 #include <iostream>
 #include<vector>
 #include<chrono>
+
 using namespace std;
 
 class TimerHandler
 {
-	vector<std::chrono::high_resolution_clock::time_point> timers;
+	std::vector<std::chrono::steady_clock::time_point> timers;
 	vector<int> times;
 public:
 	void printFrameRate(std::ostream& os = std::cout, float period = 2.0f);

@@ -1,43 +1,21 @@
-# Prerequisites
-*.d
+# Build output directory
+build/
 
-# Compiled Object files
-*.slo
-*.lo
+# Object files and Make dependency files
 *.o
+*.d
+*.slo
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
+# Libraries and Executables
+*.a
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
 *.out
-*.app
-*.vcxproj
-*.mtl
-*.png
-*.filters
-*.user
-*.log
-*.tlog
-*.recipe
-*.ilk
-*.idb
-*.pdb
-/x64
+
+# System / Editor bloat
+.DS_Store
+.vscode/
+.idea/
+/build

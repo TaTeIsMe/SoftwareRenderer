@@ -1,4 +1,4 @@
-#include<SDL.h>
+#include <SDL2/SDL.h>
 #include"WindowHandler.h"
 #include"GeometryProcessor.h"
 #include"RasterizationProcessor.h"
@@ -12,6 +12,7 @@
 #include"Camera4.h"
 #include"Fragment.h"
 #include"FragmentProcessor.h"
+#include <math.h>
 #undef main
 
 int windowHeight = 480;
@@ -44,15 +45,18 @@ int main() {
 	DeltaTime dT;
 	timerHandler.addTimers(6);
 
-	scene1.objects.push_back(loadGameObject("objects/floor.obj", "objects/missingtexture.bmp", 50));
-	//scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/missingtexture.bmp",50));
-	//scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/missingtexture.bmp", 50));
-	//scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/missingtexture.bmp", 50));
-	//scene1.objects[0].setPosition(Vector3(0,-50,0));
-	//scene1.objects[1].setPosition(Vector3(0,100,0));
-	//scene1.objects[2].setPosition(Vector3(120, 0, 0));
-	//scene1.objects[2].setRotation(Matrix::yRotation(0.3));
-	//scene1.camera.setPosition(Vector3(153,377,-384));
+	scene1.objects.push_back(loadGameObject("objects/floor.obj", "objects/floor.bmp", 50));
+	scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/box.bmp",50));
+	scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/box.bmp", 50));
+	scene1.objects.push_back(loadGameObject("objects/box.obj", "objects/box.bmp", 50));
+	scene1.objects[0].setPosition(Vector3(0,-50,0));
+	scene1.objects[1].setPosition(Vector3(0,100,0));
+	scene1.objects[2].setPosition(Vector3(120, 0, 0));
+	scene1.objects[2].setRotation(Matrix::yRotation(0.3));
+	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 4));
+	scene1.objects[4].setPosition(Vector3(-150,-50,-50));
+	scene1.objects[4].setRotation( Matrix::yRotation(-M_PI) * Matrix::xRotation(-M_PI / 2));
+	scene1.camera.setPosition(Vector3(153,377,-384));
 
 	//for (int i = 0; i < 10; i++)
 	//{
@@ -67,10 +71,10 @@ int main() {
 	//}
 	//scene1.camera.setPosition(Vector3(400,200,-300));
 
-	Triangle4 demoTriangle = Triangle4(Triangle3(Vertex3(0,0,0), Vertex3(100,0,0), Vertex3(0,100,0), Vector3(0,0,-1),scene1.objects[0].GetShape()[0].texture));
-	Triangle4 demoTriangle2 = demoTriangle.transformed(Matrix::xRotation4(M_PI / 2.5) * Matrix::zRotation4(M_PI/2));
-
+	vector<Triangle3> triangles = scene1.objectsToSceneSpace();
+	
 	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	while (eventHandler.getIsRunning())
 	{
 		scene1.camera.handleMovement(eventHandler.getWSAD(), eventHandler.getVerticalMove(), eventHandler.getMousedX(), eventHandler.getMousedY(), 1);
@@ -86,9 +90,7 @@ int main() {
 		//the graphics pipeline
 
 		vector<Fragment> fragments;
-		vector<Triangle4> triangles;
-		triangles.push_back(demoTriangle);
-		triangles.push_back(demoTriangle2);
+
 		vector<Triangle4> clippedTriangles;
 		Camera4 camera4 = Camera4(scene1.camera);
 		camera4.calculateInverse();
@@ -106,13 +108,12 @@ int main() {
 				handledTriangle = clippedTriangles[j];
 				geometryProcessor.convertToScreenSpace(handledTriangle);
 				rasterizationProcessor.rasterizeTriangle(handledTriangle, fragments);
-				//fragmentProcessor.drawFragments(fragments);
-				if(i)rasterizer.drawTriangle(Triangle2D(Triangle3(handledTriangle)),0xFF,0x00,0x00);
-				else rasterizer.drawTriangle(Triangle2D(Triangle3(handledTriangle)), 0x00, 0x00, 0xFF);
+				fragmentProcessor.drawFragments(fragments);
+				//if(i)rasterizer.drawTriangle(Triangle2D(Triangle3(handledTriangle)),0xFF,0x00,0x00);
+				//else rasterizer.drawTriangle(Triangle2D(Triangle3(handledTriangle)), 0x00, 0x00, 0xFF);
 			}
 		}
 		
-
 		windowHandler.unlockScreenTexture();
 		windowHandler.updateScreen();
 		timerHandler.printFrameRate();
