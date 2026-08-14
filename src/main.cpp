@@ -53,9 +53,6 @@ int main() {
 	scene1.objects[1].setPosition(Vector3(0,100,0));
 	scene1.objects[2].setPosition(Vector3(120, 0, 0));
 	scene1.objects[2].setRotation(Matrix::yRotation(0.3));
-	scene1.objects.push_back(loadGameObject("objects/gato.obj", "objects/gato.bmp", 4));
-	scene1.objects[4].setPosition(Vector3(-150,-50,-50));
-	scene1.objects[4].setRotation( Matrix::yRotation(-M_PI) * Matrix::xRotation(-M_PI / 2));
 	scene1.camera.setPosition(Vector3(153,377,-384));
 
 	//for (int i = 0; i < 10; i++)
